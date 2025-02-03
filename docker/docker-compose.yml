@@ -1,0 +1,28 @@
+services:
+  app:
+    image: 'ee263d7c99a1'
+    container_name: spring1app_container
+    expose:
+      - '8080'
+    ports:
+      - '8080:8080'
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/spring1
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    depends_on:
+      - db
+  db:
+    image: mysql
+    restart: always
+    container_name: db
+    environment:
+      MYSQL_DATABASE: spring1
+      MYSQL_ROOT_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - db_spring:/var/lib/mysql
+    expose:
+      - '3306'
+
+volumes:
+  db_spring:

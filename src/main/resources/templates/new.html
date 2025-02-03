@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Task</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Создать задачу:</h1>
+<form method="POST" th:action="@{/tasks}" th:object="${task}">
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" th:field="*{description}" required />
+    <div th:if="${#fields.hasErrors('description')}" style="color: red;">
+        <p th:each="error : ${#fields.errors('description')}" th:text="${error}"></p>
+    </div>
+    <br/>
+
+    <label for="status">Status:</label>
+    <select id="status" name="status" th:field="*{status}" required>
+        <option th:each="status : ${statuses}"
+                th:value="${status.name()}"
+                th:text="${status}"></option>
+    </select>
+    <br/>
+
+    <button type="submit">Сохранить задачу</button>
+</form>
+<br>
+<a href="/tasks">Обратно к задачам</a>
+</body>
+</html>

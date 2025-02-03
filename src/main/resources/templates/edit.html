@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit task</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Обновить задачу</h1>
+<form th:method="PATCH" th:action="@{/tasks/{id}(id=${task.id})}" th:object="${task}">
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" th:field="*{description}" required />
+    <br/>
+
+    <label for="status">Status:</label>
+    <select id="status" name="status" th:field="*{status}" required>
+        <option th:each="status : ${statuses}"
+                th:value="${status.name()}"
+                th:text="${status}"></option>
+    </select>
+    <br/>
+
+    <button type="submit">Обновить задачу</button>
+</form>
+<br>
+<a href="/tasks">Обратно к задачам</a>
+</body>
+</html>
