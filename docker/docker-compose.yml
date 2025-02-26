@@ -8,8 +8,8 @@ services:
       - '8080:8080'
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/spring1
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME2}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD2}
     depends_on:
       - db
   db:
@@ -18,7 +18,7 @@ services:
     container_name: db
     environment:
       MYSQL_DATABASE: spring1
-      MYSQL_ROOT_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${SPRING_DATASOURCE_PASSWORD2}
     volumes:
       - db_spring:/var/lib/mysql
     expose:

@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,11 +35,13 @@ import java.util.Optional;
 public class TaskController {
     private final TaskService taskService;
     private final TaskValidator taskValidator;
+    private final Validator validator;
 
     @Autowired
-    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher) {
+    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, Validator validator) {
         this.taskService = taskService;
         this.taskValidator = taskValidator;
+        this.validator = validator;
     }
 
     @InitBinder("task")
@@ -114,7 +117,14 @@ public class TaskController {
     @Operation(summary = "Обновляет задачу",
             description = "Обновляет задачу по id, производит редирект на страницу со всеми задачами")
     @PatchMapping("/{id}")
-    public String update(@PathVariable("id") int id, @ModelAttribute("task") Task task) {
+    public String update(@PathVariable("id") int id, @ModelAttribute("task") Task task, BindingResult bindingResult) {
+
+        validator.validate(task, bindingResult);
+
+        if (bindingResult.hasErrors()){
+            return "edit";
+        }
+
         task.setId(id);
         taskService.save(task);
         log.info("Task has been updated successfully");

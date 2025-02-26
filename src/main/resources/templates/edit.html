@@ -11,6 +11,9 @@
 <form th:method="PATCH" th:action="@{/tasks/{id}(id=${task.id})}" th:object="${task}">
     <label for="description">Description:</label>
     <input type="text" id="description" name="description" th:field="*{description}" required />
+    <div th:if="${#fields.hasErrors('description')}" style="color: red;">
+        <p th:each="error : ${#fields.errors('description')}" th:text="${error}"></p>
+    </div>
     <br/>
 
     <label for="status">Status:</label>
