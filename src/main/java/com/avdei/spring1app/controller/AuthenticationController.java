@@ -59,11 +59,11 @@ public class AuthenticationController {
     public String register(@ModelAttribute("person") @Valid Person person,
                            BindingResult bindingResult) {
 
-        System.out.println(person.getPassword());
-
         if (bindingResult.hasErrors()) {
             return "auth/registration";
         }
+        String normalizedEmail = person.getEmail().trim().toLowerCase();
+        person.setEmail(normalizedEmail);
         peopleService.savePerson(person);
         ApplicationEvent event = new PersonUpdateEvent(this, person);
         publisher.publishEvent(event);

@@ -33,13 +33,11 @@ import java.util.Optional;
 public class TaskController {
     private final TaskService taskService;
     private final TaskValidator taskValidator;
-    private final Validator validator;
 
     @Autowired
-    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, Validator validator) {
+    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher) {
         this.taskService = taskService;
         this.taskValidator = taskValidator;
-        this.validator = validator;
     }
 
     @InitBinder("task")

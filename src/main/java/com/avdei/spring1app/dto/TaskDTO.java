@@ -1,5 +1,6 @@
 package com.avdei.spring1app.dto;
 
+import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -24,5 +25,5 @@ public class TaskDTO {
     Long duration;
     Date createdAt;
     Date updatedAt;
-
+    Person author;
 }

@@ -14,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "person")
@@ -47,4 +48,6 @@ public class Person {
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     Date updatedAt;
+    @OneToMany (mappedBy = "author", fetch = FetchType.LAZY)
+    List<Task> tasks;
 }

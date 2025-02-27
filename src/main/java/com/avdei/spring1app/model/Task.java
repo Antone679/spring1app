@@ -34,4 +34,7 @@ public class Task {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     Date updatedAt;
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    Person author;
 }
