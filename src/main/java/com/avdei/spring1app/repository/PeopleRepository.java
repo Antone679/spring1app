@@ -1,6 +1,6 @@
 package com.avdei.spring1app.repository;
 
-import com.avdei.spring1app.domain.Person;
+import com.avdei.spring1app.model.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

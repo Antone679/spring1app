@@ -1,6 +1,6 @@
 package com.avdei.spring1app.validator;
 
-import com.avdei.spring1app.domain.Person;
+import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.service.PeopleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

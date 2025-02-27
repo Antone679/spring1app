@@ -1,6 +1,6 @@
 package com.avdei.spring1app.validator;
 
-import com.avdei.spring1app.domain.Task;
+import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

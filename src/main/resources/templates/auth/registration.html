@@ -10,7 +10,7 @@
 <h1>Регистрация</h1>
 <form th:method="POST" th:action="@{/auth/registration}" th:object="${person}">
     <label for="username">Имя пользователя:</label>
-    <input type="text" name="userName" id="username" required/>
+    <input type="text" name="userName" id="username" th:field="*{userName}"/>
     <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">Username Error</div>
     <br/>
 
@@ -20,12 +20,12 @@
     <br/>
 
     <label for="age">Возраст:</label>
-    <input type="number" name="age" id="age" min="0" required/>
+    <input type="number" name="age" id="age" min="0" required th:field="*{age}"/>
     <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age Error</div>
     <br/>
 
     <label for="email">Электронная почта:</label>
-    <input type="email" name="email" id="email" required/>
+    <input type="email" name="email" id="email" required th:field="*{email}"/>
     <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
     <br/>
 

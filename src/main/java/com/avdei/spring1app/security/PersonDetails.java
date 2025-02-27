@@ -1,6 +1,6 @@
 package com.avdei.spring1app.security;
 
-import com.avdei.spring1app.domain.Person;
+import com.avdei.spring1app.model.Person;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

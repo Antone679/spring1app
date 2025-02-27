@@ -1,22 +1,21 @@
-package com.avdei.spring1app.domain;
+package com.avdei.spring1app.dto;
 
-import jakarta.persistence.*;
+import com.avdei.spring1app.model.Status;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@Entity
-@Table
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Task {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+@Getter
+@Setter
+public class TaskUpdateDTO {
+
     @Column(nullable = false, unique = true)
     @Size(min = 3, max = 100, message = "Description should be between 3 and 100 characters")
     @Pattern(regexp = "^[^\\d\\t ].*", message = "Description shouldn't start from digits or spaces")

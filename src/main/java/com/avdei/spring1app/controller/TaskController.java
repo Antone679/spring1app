@@ -1,8 +1,7 @@
 package com.avdei.spring1app.controller;
 
-import com.avdei.spring1app.domain.Status;
-import com.avdei.spring1app.domain.Task;
-import com.avdei.spring1app.listeners.PersonCreationEvent;
+import com.avdei.spring1app.model.Status;
+import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.TaskService;
 import com.avdei.spring1app.validator.TaskValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

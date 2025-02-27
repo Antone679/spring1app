@@ -1,4 +1,4 @@
-package com.avdei.spring1app.domain;
+package com.avdei.spring1app.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -10,6 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "person")
@@ -37,4 +41,10 @@ public class Person {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     Role role;
+    @Temporal(TemporalType.DATE)
+    @CreationTimestamp
+    Date createdAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
+    Date updatedAt;
 }

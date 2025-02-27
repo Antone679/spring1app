@@ -1,6 +1,6 @@
 package com.avdei.spring1app.controller;
 
-import com.avdei.spring1app.domain.Person;
+import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.listeners.PersonUpdateEvent;
 import com.avdei.spring1app.service.PeopleService;
 import com.avdei.spring1app.validator.PersonValidator;

@@ -1,4 +1,4 @@
-package com.avdei.spring1app.domain;
+package com.avdei.spring1app.model;
 
 public enum Role {
     USER, ADMIN

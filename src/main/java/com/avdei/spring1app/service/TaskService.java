@@ -1,6 +1,6 @@
 package com.avdei.spring1app.service;
 
-import com.avdei.spring1app.domain.Task;
+import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.repository.TaskRepository;
 import lombok.Getter;
 import lombok.Setter;
