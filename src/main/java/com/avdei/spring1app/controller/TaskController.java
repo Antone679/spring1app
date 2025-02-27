@@ -115,9 +115,7 @@ public class TaskController {
     @Operation(summary = "Обновляет задачу",
             description = "Обновляет задачу по id, производит редирект на страницу со всеми задачами")
     @PatchMapping("/{id}")
-    public String update(@PathVariable("id") int id, @ModelAttribute("task") Task task, BindingResult bindingResult) {
-
-        validator.validate(task, bindingResult);
+    public String update(@PathVariable("id") int id, @ModelAttribute("task") @Valid Task task, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()){
             return "edit";
