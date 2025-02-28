@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface PeopleRepository extends JpaRepository<Person, Integer> {
     Optional<Person> findByUserName(String userName);
     Optional<Person> findByEmail(String email);
-    @EntityGraph (attributePaths = {"tasks"})
-    Person findByIdWithTasks(Integer id);
+//    @EntityGraph(attributePaths = {"tasks"})
+//    Optional<Person> findByIdWithTasks(Integer id);
 }

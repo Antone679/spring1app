@@ -1,5 +1,7 @@
 package com.avdei.spring1app.controller;
 
+import com.avdei.spring1app.dto.PersonCreateDTO;
+import com.avdei.spring1app.mapper.PersonMapper;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.listeners.PersonUpdateEvent;
 import com.avdei.spring1app.service.PeopleService;
@@ -29,12 +31,14 @@ public class AuthenticationController {
     final PeopleService peopleService;
     final PersonValidator personValidator;
     final ApplicationEventPublisher publisher;
+    final PersonMapper personMapper;
 
     @Autowired
-    public AuthenticationController(PeopleService peopleService, PersonValidator personValidator, ApplicationEventPublisher publisher) {
+    public AuthenticationController(PeopleService peopleService, PersonValidator personValidator, ApplicationEventPublisher publisher, PersonMapper personMapper) {
         this.peopleService = peopleService;
         this.personValidator = personValidator;
         this.publisher = publisher;
+        this.personMapper = personMapper;
     }
 
     @InitBinder("person")
@@ -50,20 +54,23 @@ public class AuthenticationController {
 
     @GetMapping("/registration")
     public String getRegistrationPage(Model model) {
-        model.addAttribute("person", new Person());
+        model.addAttribute("personCreateDTO", new PersonCreateDTO());
         log.info("GET request registration page");
         return "auth/registration";
     }
+    //
 
     @PostMapping("/registration")
-    public String register(@ModelAttribute("person") @Valid Person person,
+    public String register(@ModelAttribute("person") @Valid PersonCreateDTO personCreateDTO,
                            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "auth/registration";
         }
+        Person person = personMapper.map(personCreateDTO);
         String normalizedEmail = person.getEmail().trim().toLowerCase();
         person.setEmail(normalizedEmail);
+
         peopleService.savePerson(person);
         ApplicationEvent event = new PersonUpdateEvent(this, person);
         publisher.publishEvent(event);
