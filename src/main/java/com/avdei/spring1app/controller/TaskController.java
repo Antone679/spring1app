@@ -1,5 +1,9 @@
 package com.avdei.spring1app.controller;
 
+import com.avdei.spring1app.dto.TaskCreateDTO;
+import com.avdei.spring1app.dto.TaskDTO;
+import com.avdei.spring1app.dto.TaskUpdateDTO;
+import com.avdei.spring1app.mapper.TaskMapper;
 import com.avdei.spring1app.model.Status;
 import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.TaskService;
@@ -13,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -22,7 +27,9 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @Getter
@@ -33,11 +40,15 @@ import java.util.Optional;
 public class TaskController {
     private final TaskService taskService;
     private final TaskValidator taskValidator;
+    private final TaskMapper taskMapper;
+    private final Validator validator;
 
     @Autowired
-    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher) {
+    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, TaskMapper taskMapper, Validator validator) {
         this.taskService = taskService;
         this.taskValidator = taskValidator;
+        this.taskMapper = taskMapper;
+        this.validator = validator;
     }
 
     @InitBinder("task")
@@ -55,7 +66,13 @@ public class TaskController {
                            Model model) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Task> tasks = taskService.getAllTasks(pageable);
-        model.addAttribute("tasks", tasks);
+        List<TaskDTO> tasksDTOList = tasks.getContent()
+                .stream()
+                .map(taskMapper::map)
+                .toList();
+        Page<TaskDTO> tasksDTO = new PageImpl<>(tasksDTOList, pageable, tasks.getTotalElements());
+
+        model.addAttribute("tasksDTO", tasksDTO);
         log.info("Tasks returned successfully");
         return "tasks";
     }
@@ -68,30 +85,35 @@ public class TaskController {
 
         if (task.isEmpty()) {
             return "redirect:/tasks";
+
         }
-        model.addAttribute("task", task.get());
+        TaskDTO taskDTO = taskMapper.map(task.get());
+        model.addAttribute("taskDTO", taskDTO);
         log.info("Task returned successfully");
         return "task";
     }
 
     @Operation(summary = "Обрабатывает запрос на создание новой задачи",
-            description = "Предоставляет форму в ответ на запрос о создании новой задачи, вкладывет в ответный запрос пустую сущность 'Task'")
+            description = "Предоставляет форму в ответ на запрос о создании новой задачи, вкладывет в ответный запрос пустую сущность 'TaskCreateDTO'")
     @GetMapping("/new")
     public String newTask(Model model) {
-        model.addAttribute("task", new Task());
+        model.addAttribute("taskCreateDTO", new TaskCreateDTO());
         log.info("View form returned successfully");
         return "new";
     }
 
     @Operation(summary = "Обрабатывает POST запрос на создание новой задачи",
-            description = "Сохраняет получаемую в POST запросе сущность 'Task' в репозитории и производит редирект на список всех задач")
+            description = "Сохраняет получаемую в POST запросе сущность 'TaskCreateDTO' в репозитории и производит редирект на список всех задач")
     @PostMapping
-    public String createTask(@ModelAttribute("task") @Valid Task task,
+    public String createTask(@ModelAttribute("taskCreateDTO") @Valid TaskCreateDTO taskCreateDTO,
                              BindingResult bindingResult) {
+
+        taskValidator.validate(taskCreateDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "new";
         }
+        Task task = taskMapper.map(taskCreateDTO);
 
         taskService.save(task);
         log.info("Task saved successfully");
@@ -103,23 +125,31 @@ public class TaskController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
         Task task = taskService.getTaskById(id).get();
+        TaskDTO taskDTO = taskMapper.map(task);
         log.info("Task has been found successfully");
-        model.addAttribute("task", task);
-        log.info("Show with the Task has been sent successfully");
+        model.addAttribute("taskDTO", taskDTO);
+        log.info("Template with the Task has been sent successfully");
         System.out.println(task.getDescription());
         return "edit";
     }
-
     @Operation(summary = "Обновляет задачу",
             description = "Обновляет задачу по id, производит редирект на страницу со всеми задачами")
     @PatchMapping("/{id}")
-    public String update(@PathVariable("id") int id, @ModelAttribute("task") @Valid Task task, BindingResult bindingResult) {
+    public String update(@PathVariable("id") int id, @ModelAttribute("taskDTO") TaskUpdateDTO taskUpdateDTO, BindingResult bindingResult) {
+        validator.validate(taskUpdateDTO, bindingResult);
 
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
+            return "edit";
+        }
+        Task task = taskService.getTaskById(id).get();
+        taskMapper.update(taskUpdateDTO, task);
+
+        taskValidator.validate(task, bindingResult);
+
+        if (bindingResult.hasErrors()) {
             return "edit";
         }
 
-        task.setId(id);
         taskService.save(task);
         log.info("Task has been updated successfully");
 

@@ -18,12 +18,12 @@
     </thead>
     <tbody>
     <tr>
-        <td th:text="${task.id}"></td>
-        <td th:text="${task.description}"></td>
-        <td th:text="${task.status}"></td>
-        <td> <a th:href="@{/tasks/edit/{id}(id=${task.id})}">Изменить</a></td>
+        <td th:text="${taskDTO.id}"></td>
+        <td th:text="${taskDTO.description}"></td>
+        <td th:text="${taskDTO.status}"></td>
+        <td> <a th:href="@{/tasks/edit/{id}(id=${taskDTO.id})}">Изменить</a></td>
         <td>
-            <form th:method="DELETE" th:action="@{/tasks/{id}(id=${task.id})}">
+            <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}">
                 <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить</button>
             </form>
         </td>
