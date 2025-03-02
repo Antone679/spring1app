@@ -7,6 +7,7 @@ import com.avdei.spring1app.mapper.TaskMapper;
 import com.avdei.spring1app.model.Status;
 import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.TaskService;
+import com.avdei.spring1app.util.CurrentUserUtil;
 import com.avdei.spring1app.validator.TaskValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,10 +17,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,14 +39,12 @@ public class TaskController {
     private final TaskService taskService;
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
-    private final Validator validator;
 
     @Autowired
-    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, TaskMapper taskMapper, Validator validator) {
+    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, TaskMapper taskMapper) {
         this.taskService = taskService;
         this.taskValidator = taskValidator;
         this.taskMapper = taskMapper;
-        this.validator = validator;
     }
 
     @InitBinder("task")
@@ -62,14 +58,30 @@ public class TaskController {
     )
     @GetMapping
     public String getTasks(@RequestParam(defaultValue = "0") int page,
-                           @RequestParam(defaultValue = "10") int size,
+                           @RequestParam(defaultValue = "5") int size,
+                           @RequestParam(defaultValue = "id") String sortBy,
+                           @RequestParam(defaultValue = "asc") String sortDirection,
+                           @RequestParam(defaultValue = "false") boolean showMyTasks,
                            Model model) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Task> tasks = taskService.getAllTasks(pageable);
+
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Task> tasks;
+
+        if (showMyTasks) {
+            Integer currentUserId = CurrentUserUtil.getCurrentUser().getId();
+            tasks = taskService.getMyTasks(currentUserId, pageable);
+        } else {
+            tasks = taskService.getAllTasks(pageable);
+        }
+
         List<TaskDTO> tasksDTOList = tasks.getContent()
                 .stream()
                 .map(taskMapper::map)
                 .toList();
+
         Page<TaskDTO> tasksDTO = new PageImpl<>(tasksDTOList, pageable, tasks.getTotalElements());
 
         model.addAttribute("tasksDTO", tasksDTO);
@@ -125,30 +137,25 @@ public class TaskController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
         Task task = taskService.getTaskById(id).get();
-        TaskDTO taskDTO = taskMapper.map(task);
+        TaskUpdateDTO taskDTO = taskMapper.mapToUpdateDTO(task);
         log.info("Task has been found successfully");
         model.addAttribute("taskDTO", taskDTO);
         log.info("Template with the Task has been sent successfully");
         System.out.println(task.getDescription());
         return "edit";
     }
+
     @Operation(summary = "Обновляет задачу",
             description = "Обновляет задачу по id, производит редирект на страницу со всеми задачами")
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") int id, @ModelAttribute("taskDTO") TaskUpdateDTO taskUpdateDTO, BindingResult bindingResult) {
-        validator.validate(taskUpdateDTO, bindingResult);
+        taskValidator.validate(taskUpdateDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "edit";
         }
         Task task = taskService.getTaskById(id).get();
         taskMapper.update(taskUpdateDTO, task);
-
-        taskValidator.validate(task, bindingResult);
-
-        if (bindingResult.hasErrors()) {
-            return "edit";
-        }
 
         taskService.save(task);
         log.info("Task has been updated successfully");

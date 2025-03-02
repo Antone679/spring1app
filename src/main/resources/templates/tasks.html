@@ -12,6 +12,30 @@
 <form th:action="@{/logout}" th:method="POST">
     <button type="submit" class="logout">Выход</button>
 </form>
+
+<form th:action="@{/tasks}" method="get">
+    <label for="sortBy">Сортировать по:</label>
+    <select name="sortBy" id="sortBy">
+        <option value="id" th:selected="${sortBy == 'id'}">ID</option>
+        <option value="status" th:selected="${sortBy == 'status'}">Статус</option>
+    </select>
+
+    <label for="sortDirection">Порядок:</label>
+    <select name="sortDirection" id="sortDirection">
+        <option value="asc" th:selected="${sortDirection == 'asc'}">Возрастание</option>
+        <option value="desc" th:selected="${sortDirection == 'desc'}">Убывание</option>
+    </select>
+    <label for="showMyTasks">Показать мои задачи:</label>
+    <select name="showMyTasks" id="showMyTasks">
+        <option value="true" th:selected="${showMyTasks == 'true'}">Да</option>
+        <option value="false" th:selected="${showMyTasks == 'false'}">Нет</option>
+    </select>
+    <input type="hidden" name="page" th:value="${currentPage}"/>
+    <input type="hidden" name="size" th:value="${pageSize}"/>
+
+    <button type="submit">Применить сортировку</button>
+</form>
+
 <table>
     <thead>
     <tr>

@@ -16,4 +16,5 @@ public abstract class TaskMapper {
     public abstract void update(TaskUpdateDTO updateDTO, @MappingTarget Task task);
     public abstract Task map(TaskCreateDTO createDTO);
     public abstract TaskDTO map(Task task);
+    public abstract TaskUpdateDTO mapToUpdateDTO(Task task);
 }

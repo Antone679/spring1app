@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Optional;
+
 @Component
 @Slf4j
 public class TaskValidator implements Validator {
@@ -30,7 +32,8 @@ public class TaskValidator implements Validator {
     public boolean supports(Class<?> clazz) {
 
         return Task.class.equals(clazz) ||
-                TaskCreateDTO.class.equals(clazz);
+                TaskCreateDTO.class.equals(clazz) ||
+                TaskUpdateDTO.class.equals(clazz);
     }
 
     @Override
@@ -40,14 +43,31 @@ public class TaskValidator implements Validator {
 
         if (target instanceof TaskCreateDTO) {
             task = taskMapper.map((TaskCreateDTO) target);
+        } else if (target instanceof TaskUpdateDTO) {
+            TaskUpdateDTO updateDTO = (TaskUpdateDTO) target;
+            task = taskService.getTaskById(updateDTO.getId()).orElse(null);
         } else {
             task = (Task) target;
         }
 
-        if (taskService.getTaskByDescription(task.getDescription()).isPresent()) {
-            errors.rejectValue("description", "", "Task with this description already exists");
+        if (task != null && task.getDescription() != null) {
+            if (target instanceof TaskCreateDTO) {
+                if (taskService.getTaskByDescription(task.getDescription()).isPresent()) {
+                    errors.rejectValue("description", "", "Task with this description already exists");
+                }
+            } else if (target instanceof TaskUpdateDTO) {
+                TaskUpdateDTO updateDTO = (TaskUpdateDTO) target;
+                String newDescription = updateDTO.getDescription();
+                Integer taskId = updateDTO.getId();
+
+                Optional<Task> existingTaskWithSameDescription = taskService.getTaskByDescription(newDescription);
+
+                if (existingTaskWithSameDescription.isPresent() &&
+                        !existingTaskWithSameDescription.get().getId().equals(taskId)) {
+                    errors.rejectValue("description", "", "Task with this description already exists");
+                }
+            }
         }
-        errors.getAllErrors()
-                .forEach(objectError -> log.error("{} - {}", objectError.getObjectName(), objectError.getDefaultMessage()));
+
     }
 }

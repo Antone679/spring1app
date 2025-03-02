@@ -31,6 +31,10 @@ public class TaskService {
         return taskRepository.findAll(pageable);
     }
 
+    public Page<Task> getMyTasks(Integer userId, Pageable pageable) {
+        return taskRepository.findByAuthorId(userId, pageable);
+    }
+
     public Optional<Task> getTaskById(int id) {
 
         return taskRepository.findById(id);
