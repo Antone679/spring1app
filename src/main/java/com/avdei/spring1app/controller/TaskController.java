@@ -4,10 +4,13 @@ import com.avdei.spring1app.dto.TaskCreateDTO;
 import com.avdei.spring1app.dto.TaskDTO;
 import com.avdei.spring1app.dto.TaskUpdateDTO;
 import com.avdei.spring1app.mapper.TaskMapper;
+import com.avdei.spring1app.model.Person;
+import com.avdei.spring1app.model.Role;
 import com.avdei.spring1app.model.Status;
 import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.TaskService;
 import com.avdei.spring1app.util.CurrentUserUtil;
+import com.avdei.spring1app.util.DurationConverter;
 import com.avdei.spring1app.validator.TaskValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +28,8 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,7 +63,7 @@ public class TaskController {
     )
     @GetMapping
     public String getTasks(@RequestParam(defaultValue = "0") int page,
-                           @RequestParam(defaultValue = "5") int size,
+                           @RequestParam(defaultValue = "10") Integer size,
                            @RequestParam(defaultValue = "id") String sortBy,
                            @RequestParam(defaultValue = "asc") String sortDirection,
                            @RequestParam(defaultValue = "false") boolean showMyTasks,
@@ -100,6 +105,8 @@ public class TaskController {
 
         }
         TaskDTO taskDTO = taskMapper.map(task.get());
+        updateDurationToBeShown(taskDTO);
+
         model.addAttribute("taskDTO", taskDTO);
         log.info("Task returned successfully");
         return "task";
@@ -175,5 +182,29 @@ public class TaskController {
     @ModelAttribute
     private void addCommonAttributes(Model model) {
         model.addAttribute("statuses", Status.values());
+    }
+
+    @ModelAttribute
+    private void checkAdminRights(Model model) {
+        Person currentUser = CurrentUserUtil.getCurrentUser();
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        model.addAttribute("admin", isAdmin);
+    }
+
+    private void updateDurationToBeShown(TaskDTO taskDTO) {
+        String durationAsString;
+        if (taskDTO.getStatus() == Status.IN_PROGRESS) {
+            Instant now = Instant.now();
+            Instant updatedAt = taskDTO.getUpdatedAt().toInstant();
+            long durationSinceLastUpdate = Duration.between(updatedAt, now).toMillis();
+            durationAsString = DurationConverter
+                    .formatDuration(taskDTO.getDuration() + durationSinceLastUpdate);
+            taskDTO.setCurrentShow(durationAsString);
+        } else {
+            durationAsString = DurationConverter.formatDuration(taskDTO.getDuration());
+            if (durationAsString.isBlank())
+                durationAsString = "0";
+            taskDTO.setCurrentShow(durationAsString);
+        }
     }
 }

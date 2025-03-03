@@ -27,7 +27,8 @@ public class Task {
     String description;
     @Enumerated(EnumType.ORDINAL)
     Status status;
-    Long duration;
+    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
+    long duration;
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     Date createdAt;
@@ -37,4 +38,5 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "author_id")
     Person author;
+    boolean isActive;
 }

@@ -22,7 +22,8 @@ public class TaskDTO {
     Integer id;
     String description;
     Status status;
-    Long duration;
+    long duration;
+    String currentShow;
     Date createdAt;
     Date updatedAt;
     Person author;

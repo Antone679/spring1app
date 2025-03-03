@@ -4,71 +4,126 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasks</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <style>
 
+    </style>
 </head>
 <body>
-<h1>Список задач</h1>
-<form th:action="@{/logout}" th:method="POST">
-    <button type="submit" class="logout">Выход</button>
-</form>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/tasks">TaskTracker</a>
+        <button class="navbar-toggler" type="button"data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks/new">Create new</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks?sortBy=id&sortDirection=asc&showMyTasks=true&page=&size=5">My Tasks</a>
+                </li>
+                <li class="nav-item" th:if="${admin}">
+                    <a class="nav-link" href="/admin">Admin Panel</a>
+                </li>
+            </ul>
+            <div class="ml-auto">
+                <form th:action="@{/logout}" th:method="POST" class="form-inline">
+                    <button type="submit" class="btn btn-light">Выход</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
 
-<form th:action="@{/tasks}" method="get">
-    <label for="sortBy">Сортировать по:</label>
-    <select name="sortBy" id="sortBy">
-        <option value="id" th:selected="${sortBy == 'id'}">ID</option>
-        <option value="status" th:selected="${sortBy == 'status'}">Статус</option>
-    </select>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand mx-auto" href="/tasks">TaskTracker 2025</a>
+    </div>
+</nav>
 
-    <label for="sortDirection">Порядок:</label>
-    <select name="sortDirection" id="sortDirection">
-        <option value="asc" th:selected="${sortDirection == 'asc'}">Возрастание</option>
-        <option value="desc" th:selected="${sortDirection == 'desc'}">Убывание</option>
-    </select>
-    <label for="showMyTasks">Показать мои задачи:</label>
-    <select name="showMyTasks" id="showMyTasks">
-        <option value="true" th:selected="${showMyTasks == 'true'}">Да</option>
-        <option value="false" th:selected="${showMyTasks == 'false'}">Нет</option>
-    </select>
-    <input type="hidden" name="page" th:value="${currentPage}"/>
-    <input type="hidden" name="size" th:value="${pageSize}"/>
+<br>
+<br>
+<h3 class="text-center">Все ваши задачи
+    <small class="text-muted">в одном месте</small></h3>
+<br>
+<div class="d-flex">
+    <div class="sidebar">
+        <form th:action="@{/tasks}" method="get">
+            <label for="sortBy">Отсортировать:</label>
+            <select name="sortBy" id="sortBy" class="form-control mb-2">
+                <option value="id" th:selected="${sortBy == 'id'}">ID</option>
+                <option value="status" th:selected="${sortBy == 'status'}">Статус</option>
+            </select>
 
-    <button type="submit">Применить сортировку</button>
-</form>
+            <label for="sortDirection">Порядок:</label>
+            <select name="sortDirection" id="sortDirection" class="form-control mb-2">
+                <option value="asc" th:selected="${sortDirection == 'asc'}">Возрастание</option>
+                <option value="desc" th:selected="${sortDirection == 'desc'}">Убывание</option>
+            </select>
 
-<table>
-    <thead>
-    <tr>
+            <label for="showMyTasks">Показать мои задачи:</label>
+            <select name="showMyTasks" id="showMyTasks" class="form-control mb-2">
+                <option value="true" th:selected="${showMyTasks == 'true'}">Да</option>
+                <option value="false" th:selected="${showMyTasks == 'false'}">Нет</option>
+            </select>
+
+            <label for="size">Задач на странице:</label>
+            <select name="size" id="size" class="form-control mb-2">
+                <option value="5" th:selected="${size == 5}">5</option>
+                <option value="10" th:selected="${size == 10}">10</option>
+                <option value="15" th:selected="${size == 15}">15</option>
+            </select>
+
+            <input type="hidden" name="page" th:value="${currentPage}"/>
+
+            <button type="submit" class="btn btn-primary">Применить сортировку</button>
+        </form>
+    </div>
+
+
+<div class="content flex-grow-1">
+<table class="table table-bordered table-striped w-100">
+    <thead class="thead-light">
+    <tr style="background-color: #007bff; color: white;">
         <th>Id</th>
         <th>Description</th>
         <th>Status</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="taskDTO : ${tasksDTO.content}">
         <td th:text="${taskDTO.id}"></td>
-        <td> <a th:href="@{/tasks/{id}(id=${taskDTO.id})}" th:text="${taskDTO.description}"></a></td>
+        <td><a th:href="@{/tasks/{id}(id=${taskDTO.id})}" th:text="${taskDTO.description}"></a></td>
         <td th:text="${taskDTO.status}"></td>
-        <td> <a th:href="@{/tasks/edit/{id}(id=${taskDTO.id})}">Изменить</a></td>
         <td>
-            <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}">
-                <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить</button>
-        </form>
+            <form th:method="GET" th:action="@{/tasks/edit/{id}(id=${taskDTO.id})}" style="display:inline;">
+                <button type="submit" class="btn btn-warning btn-sm">Изменить</button>
+            </form>
+            <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить</button>
+            </form>
         </td>
     </tr>
     </tbody>
 </table>
-<br>
-<div>
-    <span>Страница: <span th:text="${tasksDTO.number + 1}"></span></span>
-    <span> из <span th:text="${tasksDTO.totalPages}"></span></span>
+<div th:if="${tasksDTO.totalElements > 0}">
+    <span class="badge bg-primary text-white">Страница: <span th:text="${tasksDTO.number + 1}"></span></span>
+    <span class="badge bg-primary text-white"> из <span th:text="${tasksDTO.totalPages}"></span></span>
 </div>
 <br>
-<div>
-    <a th:if="${tasksDTO.hasPrevious()}" th:href="@{/tasks(page=${tasksDTO.number - 1}, size=${tasksDTO.size})}">Назад</a>
-    <a th:if="${tasksDTO.hasNext()}" th:href="@{/tasks(page=${tasksDTO.number + 1}, size=${tasksDTO.size})}">Вперед</a>
+<div th:if="${tasksDTO.totalElements > 0}">
+    <a th:if="${tasksDTO.hasPrevious()}" th:href="@{/tasks(page=${tasksDTO.number - 1},
+    size=${tasksDTO.size})}" class="btn btn-primary">Назад</a>
+    <a th:if="${tasksDTO.hasNext()}" th:href="@{/tasks(page=${tasksDTO.number + 1},
+    size=${tasksDTO.size})}" class="btn btn-primary">Вперед</a>
 </div>
-<br>
-<a href="tasks/new">Создать новую задачу</a>
+</div>
+</div>
 </body>
 </html>

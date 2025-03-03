@@ -1,97 +1,15 @@
-table {
-       width: 100%;
-       border-collapse: collapse;
-   }
-   th, td {
-       border: 2px solid black;
-       text-align: center;
-       padding: 10px;
-       background-color: #f2f2f2;
-   }
-   th {
-       background-color: #d9d9d9;
-   }
-   body {
-       font-family: Arial, sans-serif;
-       background-color: #f9f9f9;
-       margin: 0;
-       padding: 20px;
-   }
-   h1 {
-       color: #333;
-       text-align: center;
-   }
-   form {
-       background-color: #fff;
-       border: 1px solid #ccc;
-       border-radius: 5px;
-       padding: 20px;
-       max-width: 400px;
-       margin: 0 auto;
-       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-   }
-   label {
-       display: block;
-       margin-bottom: 8px;
-       font-weight: bold;
-   }
+body {
+            padding-bottom: 56px;
+}
 
-   input[type="text"],
-   select {
-       width: 100%;
-       padding: 10px;
-       margin-bottom: 15px;
-       border: 1px solid #ccc;
-       border-radius: 4px;
-       box-sizing: border-box;
-   }
+.sidebar {
+    background-color: white;
+    padding: 15px;
+    height: 100vh;
+}
 
-   button {
-       background-color: #4CAF50;
-       color: white;
-       padding: 10px 15px;
-       border: none;
-       border-radius: 4px;
-       cursor: pointer;
-       font-size: 16px;
-       width: 100%;
-   }
-
-   button:hover {
-       background-color: #45a049;
-   }
-
-   a {
-       display: block;
-       text-align: center;
-       margin-top: 20px;
-       color: #007BFF;
-       text-decoration: none;
-   }
-
-   a:hover {
-       text-decoration: underline;
-   }
-   .delete-button {
-       background-color: #f44336;
-       color: white;
-       padding: 10px 15px;
-       border: none;
-       border-radius: 4px;
-       cursor: pointer;
-       font-size: 16px;
-       width: auto;
-   }
-  .logout {
-       background-color: #f44336;
-       color: white;
-       float: right;
-       padding: 10px 15px;
-       border: none;
-       border-radius: 4px;
-       cursor: pointer;
-       font-size: 16px;
-        }
-   .delete-button:hover {
-       background-color: #d32f2f;
-   }
+.separator {
+    border-left: 2px solid #007bff;
+    height: 100%;
+    margin: 0 15px;
+}
