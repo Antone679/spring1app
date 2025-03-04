@@ -10,12 +10,17 @@
 <h1>Создать задачу:</h1>
 <form method="POST" th:action="@{/tasks}" th:object="${taskCreateDTO}">
     <label for="description">Description:</label>
-    <textarea id="description" name="description" th:field="*{description}" rows="5" cols="50" required></textarea>
+    <textarea id="description" name="description" th:field="*{description}" rows="1" cols="40" placeholder="От 3 до 30 символов" required></textarea>
     <div th:if="${#fields.hasErrors('description')}" style="color: red;">
         <p th:each="error : ${#fields.errors('description')}" th:text="${error}"></p>
     </div>
     <br/>
-
+    <label for="text">Text:</label>
+    <textarea id="text" name="text" th:field="*{text}" rows="10" cols="50"></textarea>
+    <div th:if="${#fields.hasErrors('text')}" style="color: red;">
+        <p th:each="error : ${#fields.errors('text')}" th:text="${error}"></p>
+    </div>
+    <br/>
     <label for="status">Status:</label>
     <select id="status" name="status" th:field="*{status}" required>
         <option th:each="status : ${statuses}"

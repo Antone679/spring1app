@@ -22,9 +22,11 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     @Column(nullable = false, unique = true, columnDefinition = "TEXT")
-    @Size(min = 3, max = 100, message = "Description should be between 3 and 100 characters")
+    @Size(min = 3, max = 30, message = "Description should be between 3 and 30 characters")
     @Pattern(regexp = "^[^\\d\\t ].*", message = "Description shouldn't start from digits or spaces")
     String description;
+    @Column(columnDefinition = "TEXT")
+    String text;
     @Enumerated(EnumType.ORDINAL)
     Status status;
     @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")

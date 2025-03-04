@@ -22,6 +22,7 @@ import java.util.Date;
 public class TaskDTO {
     Integer id;
     String description;
+    String text;
     Status status;
     long duration;
     String currentShow;

@@ -13,6 +13,7 @@
     <tr>
         <th>Id</th>
         <th>Description</th>
+        <th>Text</th>
         <th>Status</th>
     </tr>
     </thead>
@@ -25,6 +26,7 @@
                Время выполнения задачи:  <li th:text="${taskDTO.currentShow}"></li>
             </ul>
         </td>
+        <td th:text="${taskDTO.text}"></td>
         <td th:text="${taskDTO.status}"></td>
         <td><a th:href="@{/tasks/edit/{id}(id=${taskDTO.id})}">Изменить</a></td>
         <td>

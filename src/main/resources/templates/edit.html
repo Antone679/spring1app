@@ -10,12 +10,19 @@
 <h1>Обновить задачу</h1>
 <form th:method="PATCH" th:action="@{/tasks/{id}(id=${taskDTO.id})}" th:object="${taskDTO}">
     <label for="description">Description:</label>
-    <textarea id="description" name="description" th:field="*{description}" rows="5" cols="50" required></textarea>
+    <textarea id="description" name="description" th:field="*{description}" rows="2" cols="50" required></textarea>
     <div th:if="${#fields.hasErrors('description')}" style="color: red;">
         <p th:each="error : ${#fields.errors('description')}" th:text="${error}"></p>
     </div>
     <br/>
-
+//
+    <label for="text">Text:</label>
+    <textarea id="text" name="text" th:field="*{text}" rows="10" cols="50" required></textarea>
+    <div th:if="${#fields.hasErrors('text')}" style="color: red;">
+        <p th:each="error : ${#fields.errors('text')}" th:text="${error}"></p>
+    </div>
+    <br/>
+    //
     <label for="status">Status:</label>
     <select id="status" name="status" th:field="*{status}" required>
         <option th:each="status : ${statuses}"
