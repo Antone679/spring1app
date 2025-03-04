@@ -44,7 +44,7 @@ public class AuthenticationController {
         this.personMapper = personMapper;
     }
 
-    @InitBinder("person")
+    @InitBinder("personCreateDTO")
     protected void initBinder(WebDataBinder binder) {
         binder.setValidator(personValidator);
     }
@@ -78,6 +78,7 @@ public class AuthenticationController {
         if (bindingResult.hasErrors()) {
             return "auth/registration";
         }
+
         Person person = personMapper.map(personCreateDTO);
         String normalizedEmail = person.getEmail().trim().toLowerCase();
         person.setEmail(normalizedEmail);

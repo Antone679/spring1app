@@ -24,7 +24,6 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +32,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @Getter
@@ -54,7 +52,12 @@ public class TaskController {
     }
 
     @InitBinder("task")
-    protected void initBinder(WebDataBinder binder) {
+    protected void initTaskBinder(WebDataBinder binder) {
+        binder.setValidator(taskValidator);
+    }
+
+    @InitBinder("taskCreateDTO")
+    protected void initTaskCreateDTOBinder(WebDataBinder binder) {
         binder.setValidator(taskValidator);
     }
 
@@ -109,10 +112,10 @@ public class TaskController {
     public String getTask(@PathVariable("id") int id, Model model) {
         Optional<Task> task = taskService.getTaskById(id);
 
-        if (task.isEmpty()) {
-            return "redirect:/tasks";
-
-        }
+//        if (task.isEmpty()) {
+//            return "redirect:/tasks";
+//
+//        }
         TaskDTO taskDTO = taskMapper.map(task.get());
         updateDurationToBeShown(taskDTO);
 
@@ -135,8 +138,6 @@ public class TaskController {
     @PostMapping
     public String createTask(@ModelAttribute("taskCreateDTO") @Valid TaskCreateDTO taskCreateDTO,
                              BindingResult bindingResult) {
-
-        taskValidator.validate(taskCreateDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "new";
@@ -165,6 +166,7 @@ public class TaskController {
             description = "Обновляет задачу по id, производит редирект на страницу со всеми задачами")
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") int id, @ModelAttribute("taskDTO") TaskUpdateDTO taskUpdateDTO, BindingResult bindingResult) {
+
         taskValidator.validate(taskUpdateDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
