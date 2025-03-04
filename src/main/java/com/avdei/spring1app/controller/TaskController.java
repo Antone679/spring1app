@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,15 +85,23 @@ public class TaskController {
 
         List<TaskDTO> tasksDTOList = tasks.getContent()
                 .stream()
-                .map(taskMapper::map)
+                .map(task -> {
+                    TaskDTO taskDTO = taskMapper.map(task);
+
+                    LocalDate localDate = DurationConverter.convertDateToLocalDate(task.getCreatedAt());
+                    taskDTO.setFormattedCreationDate(localDate);
+                    return taskDTO;
+                })
                 .toList();
 
         Page<TaskDTO> tasksDTO = new PageImpl<>(tasksDTOList, pageable, tasks.getTotalElements());
 
-        model.addAttribute("tasksDTO", tasksDTO);
+        setSortingAttributes(page, size, sortBy, sortDirection, showMyTasks, model, tasksDTO);
+
         log.info("Tasks returned successfully");
         return "tasks";
     }
+
 
     @Operation(summary = "Получает задачу с определенным id",
             description = "Получает задачу по айди, выводит ее на отдельной странице, посвященной этой задаче")
@@ -206,5 +215,13 @@ public class TaskController {
                 durationAsString = "0";
             taskDTO.setCurrentShow(durationAsString);
         }
+    }
+    private static void setSortingAttributes(int page, Integer size, String sortBy, String sortDirection, boolean showMyTasks, Model model, Page<TaskDTO> tasksDTO) {
+        model.addAttribute("tasksDTO", tasksDTO);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("size", size);
+        model.addAttribute("showMyTasks", showMyTasks);
+        model.addAttribute("currentPage", page);
     }
 }

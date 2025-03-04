@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -27,4 +28,5 @@ public class TaskDTO {
     Date createdAt;
     Date updatedAt;
     Person author;
+    LocalDate formattedCreationDate;
 }

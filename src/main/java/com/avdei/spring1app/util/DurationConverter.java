@@ -1,5 +1,10 @@
 package com.avdei.spring1app.util;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+
 public class DurationConverter {
     public static String formatDuration(long durationInMillis) {
         long seconds = durationInMillis / 1000;
@@ -27,5 +32,9 @@ public class DurationConverter {
         }
 
         return formattedDuration.toString().trim();
+    }
+    public static LocalDate convertDateToLocalDate(Date date) {
+        Instant millis = Instant.ofEpochMilli(date.getTime());
+        return LocalDate.ofInstant(millis, ZoneId.systemDefault());
     }
 }
