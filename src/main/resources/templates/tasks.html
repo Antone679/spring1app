@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
     <style>
-
     </style>
 </head>
 <body>
@@ -60,6 +59,7 @@
                 <option value="" th:selected="${sortBy == ''}">-- Выберите --</option>
                 <option value="id" th:selected="${sortBy == 'id'}">ID</option>
                 <option value="status" th:selected="${sortBy == 'status'}">Статус</option>
+                <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Дата создания</option>
             </select>
 
             <label for="sortDirection">Порядок:</label>
@@ -67,13 +67,6 @@
                 <option value="" th:selected="${sortDirection == ''}">-- Выберите --</option>
                 <option value="asc" th:selected="${sortDirection == 'asc'}">Возрастание</option>
                 <option value="desc" th:selected="${sortDirection == 'desc'}">Убывание</option>
-            </select>
-
-            <label for="showMyTasks">Показать мои задачи:</label>
-            <select name="showMyTasks" id="showMyTasks" class="form-control mb-2">
-                <option value="" th:selected="${showMyTasks == ''}">-- Выберите --</option>
-                <option value="true" th:selected="${showMyTasks == 'true'}">Да</option>
-                <option value="false" th:selected="${showMyTasks == 'false'}">Нет</option>
             </select>
 
             <label for="size">Задач на странице:</label>
@@ -89,7 +82,6 @@
             <button type="submit" class="btn btn-primary">Применить сортировку</button>
         </form>
     </div>
-
 
     <div class="content flex-grow-1">
         <table class="table table-bordered table-striped w-100">

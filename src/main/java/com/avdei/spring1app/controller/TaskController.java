@@ -112,10 +112,10 @@ public class TaskController {
     public String getTask(@PathVariable("id") int id, Model model) {
         Optional<Task> task = taskService.getTaskById(id);
 
-//        if (task.isEmpty()) {
-//            return "redirect:/tasks";
-//
-//        }
+        if (task.isEmpty()) {
+            return "redirect:/tasks";
+
+        }
         TaskDTO taskDTO = taskMapper.map(task.get());
         updateDurationToBeShown(taskDTO);
 
