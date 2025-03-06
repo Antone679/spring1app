@@ -199,7 +199,9 @@ public class TaskController {
     private void checkAdminRights(Model model) {
         Person currentUser = CurrentUserUtil.getCurrentUser();
         boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+        Integer isMyTask = currentUser.getId();
         model.addAttribute("admin", isAdmin);
+        model.addAttribute("isMyTask", isMyTask);
     }
 
     private void updateDurationToBeShown(TaskDTO taskDTO) {

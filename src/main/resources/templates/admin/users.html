@@ -2,11 +2,128 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <style>
+    </style>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Admins mode</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks">Back to Normal Mode</a>
+                </li>
+            </ul>
+            <div class="ml-auto">
+                <form th:action="@{/logout}" th:method="POST" class="form-inline">
+                    <button type="submit" class="btn btn-light">Выход</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
 
-<h1>Всего пользователей: <span th:text="${personsDTO.totalElements}"></span></h1>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">TaskTracker Admins mode</a>
+    </div>
+</nav>
 
+<br>
+<br>
+<h3 class="text-center">Все пользователи приложения
+    <small class="text-muted">в одном месте</small></h3>
+<br>
+<div class="d-flex">
+    <div class="sidebar">
+        <form th:action="@{/admin}" method="get">
+            <label for="sortBy">Отсортировать:</label>
+            <select name="sortBy" id="sortBy" class="form-control mb-2">
+                <option value="" th:selected="${sortBy == ''}">-- Выберите --</option>
+                <option value="id" th:selected="${sortBy == 'id'}">ID</option>
+                <option value="role" th:selected="${sortBy == 'role'}">Статус</option>
+                <option value="userName" th:selected="${sortBy == 'userName'}">Имя</option>
+                <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Дата создания</option>
+            </select>
+
+            <label for="sortDirection">Порядок:</label>
+            <select name="sortDirection" id="sortDirection" class="form-control mb-2">
+                <option value="" th:selected="${sortDirection == ''}">-- Выберите --</option>
+                <option value="asc" th:selected="${sortDirection == 'asc'}">Возрастание</option>
+                <option value="desc" th:selected="${sortDirection == 'desc'}">Убывание</option>
+            </select>
+
+            <label for="size">Пользователей на странице:</label>
+            <select name="size" id="size" class="form-control mb-2">
+                <option value="" th:selected="${size == ''}">-- Выберите --</option>
+                <option value="5" th:selected="${size == 5}">5</option>
+                <option value="10" th:selected="${size == 10}">10</option>
+                <option value="15" th:selected="${size == 15}">15</option>
+            </select>
+
+            <input type="hidden" name="page" th:value="${currentPage}"/>
+
+            <button type="submit" class="btn btn-dark">Применить сортировку</button>
+        </form>
+    </div>
+
+    <div class="content flex-grow-1">
+        <table class="table table-bordered table-striped table-dark">
+            <thead class="thead-light">
+            <tr style="background-color: #007bff; color: white;">
+                <th>Id</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="personDTO : ${personsDTO.content}">
+                <td th:text="${personDTO.id}"></td>
+                <td th:text="${personDTO.userName}"></td>
+                <td th:text="${personDTO.email}"></td>
+                <td th:text="${personDTO.role}"></td>
+                <td th:text="${personDTO.createdAt}"></td>
+                <td>
+                        <form th:method="GET" th:action="@{/admin/edit/{id}(id=${personDTO.id})}" style="display:inline;">
+                            <button type="submit" class="btn btn-light btn-sm">Изменить</button>
+                        </form>
+                        <form th:method="DELETE" th:action="@{/admin/{id}(id=${personDTO.id})}" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Вы уверены, что хотите удалить этого пользователя?');">Удалить
+                            </button>
+                        </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:if="${personsDTO.totalElements > 0}">
+            <span class="badge bg-dark text-white">Страница: <span th:text="${personsDTO.number + 1}"></span></span>
+            <span class="badge bg-dark text-white"> из <span th:text="${personsDTO.totalPages}"></span></span>
+        </div>
+        <br>
+        <div th:if="${personsDTO.totalElements > 0}">
+            <a th:if="${personsDTO.hasPrevious()}"
+               th:href="@{/admin(page=${personsDTO.number - 1}, size=${personsDTO.size}, sortBy=${sortBy}, sortDirection=${sortDirection})}"
+               class="btn btn-dark">Назад</a>
+            <a th:if="${personsDTO.hasNext()}"
+               th:href="@{/admin(page=${personsDTO.number + 1}, size=${personsDTO.size}, sortBy=${sortBy}, sortDirection=${sortDirection})}"
+               class="btn btn-dark">Вперед</a>
+        </div>
+    </div>
+</div>
+</div>
 </body>
 </html>

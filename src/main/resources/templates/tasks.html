@@ -12,7 +12,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/tasks">
+        <a class="navbar-brand" href="#">
             <img src="/css/logo.png" alt="TaskTracker" style="width: 45px; height: auto;" />
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
@@ -44,7 +44,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-bottom">
     <div class="container-fluid">
-        <a class="navbar-brand mx-auto" href="/tasks">TaskTracker 2025</a>
+        <a class="navbar-brand" href="/tasks">TaskTracker 2025</a>
     </div>
 </nav>
 
@@ -105,14 +105,21 @@
                 <td th:text="${taskDTO.author.userName}"></td>
                 <td th:text="${taskDTO.formattedCreationDate}"></td>
                 <td>
-                    <form th:method="GET" th:action="@{/tasks/edit/{id}(id=${taskDTO.id})}" style="display:inline;">
-                        <button type="submit" class="btn btn-warning btn-sm">Изменить</button>
-                    </form>
-                    <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}" style="display:inline;">
-                        <button type="submit" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить
-                        </button>
-                    </form>
+                    <div th:if="${taskDTO.author.id == isMyTask || admin}">
+                        <form th:method="GET" th:action="@{/tasks/edit/{id}(id=${taskDTO.id})}" style="display:inline;">
+                            <button type="submit" class="btn btn-warning btn-sm">Изменить</button>
+                        </form>
+                        <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить
+                            </button>
+                        </form>
+                    </div>
+                    <div th:if="${!(taskDTO.author.id == isMyTask || admin)}">
+                        <div class="p-3 mb-2 bg-secondary text-white">
+                        Задача создана другим пользователем
+                        </div>
+                    </div>
                 </td>
             </tr>
             </tbody>
