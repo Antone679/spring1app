@@ -178,7 +178,7 @@ public class TaskController {
         taskService.save(task);
         log.info("Task has been updated successfully");
 
-        return "redirect:/tasks";
+        return "redirect:/tasks/" + id;
     }
 
     @Operation(summary = "Удаляет задачу из репозитория",

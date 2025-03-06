@@ -4,42 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
-<h1>Просмотр задачи</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Description</th>
-        <th>Text</th>
-        <th>Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td th:text="${taskDTO.id}"></td>
-        <td>
-            <ul>
-                <li th:text="${taskDTO.description}"></li>
-               Время выполнения задачи:  <li th:text="${taskDTO.currentShow}"></li>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/tasks">
+            <img src="/css/logo.png" alt="TaskTracker" style="width: 45px; height: auto;" />
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks/new">Create new</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks?sortBy=id&sortDirection=asc&showMyTasks=true&page=&size=10">My Tasks</a>
+                </li>
+                <li class="nav-item" th:if="${admin}">
+                    <a class="nav-link" href="/admin">Admin Panel</a>
+                </li>
             </ul>
-        </td>
-        <td th:text="${taskDTO.text}"></td>
-        <td th:text="${taskDTO.status}"></td>
-        <td><a th:href="@{/tasks/edit/{id}(id=${taskDTO.id})}">Изменить</a></td>
-        <td>
-            <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}">
-                <button type="submit" class="delete-button"
-                        onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить
-                </button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+            <div class="ml-auto">
+                <form th:action="@{/logout}" th:method="POST" class="form-inline">
+                    <button type="submit" class="btn btn-light">Выход</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">TaskTracker 2025</a>
+    </div>
+</nav>
+
 <br>
-<a href="/tasks">Обратно к задачам</a>
+<br>
+<h3 class="text-center">Все ваши задачи
+    <small class="text-muted">в одном месте</small></h3>
+
+<div class="container mt-5">
+    <h2 class="text-center">Просмотр задачи ID: <span th:text="${taskDTO.id}"></span></h2>
+    <div class="card task-card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Автор: <span th:text="${taskDTO.author.userName}"></span></h5>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title" th:text="${taskDTO.description}"></h5>
+            <p class="card-text" th:text="${taskDTO.text}"></p>
+            <p class="text-muted">Время выполнения задачи: <span th:text="${taskDTO.currentShow}"></span></p>
+            <p class="text-muted">Статус: <span th:text="${taskDTO.status}"></span></p>
+        </div>
+        <div class="card-footer text-right">
+            <a th:href="@{/tasks/edit/{id}(id=${taskDTO.id})}" class="btn btn-warning">Изменить</a>
+            <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}" style="display:inline;">
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <div class="text-center">
+        <a href="/tasks" class="btn btn-secondary">Обратно к задачам</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

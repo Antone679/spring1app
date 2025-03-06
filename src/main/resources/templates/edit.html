@@ -4,36 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
-<h1>Обновить задачу</h1>
-<form th:method="PATCH" th:action="@{/tasks/{id}(id=${taskDTO.id})}" th:object="${taskDTO}">
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" th:field="*{description}" rows="2" cols="50" required></textarea>
-    <div th:if="${#fields.hasErrors('description')}" style="color: red;">
-        <p th:each="error : ${#fields.errors('description')}" th:text="${error}"></p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/tasks">
+            <img src="/css/logo.png" alt="TaskTracker" style="width: 45px; height: auto;" />
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks?sortBy=id&sortDirection=asc&showMyTasks=true&page=&size=10">My Tasks</a>
+                </li>
+                <li class="nav-item" th:if="${admin}">
+                    <a class="nav-link" href="/admin">Admin Panel</a>
+                </li>
+            </ul>
+            <div class="ml-auto">
+                <form th:action="@{/logout}" th:method="POST" class="form-inline">
+                    <button type="submit" class="btn btn-light">Выход</button>
+                </form>
+            </div>
+        </div>
     </div>
-    <br/>
-//
-    <label for="text">Text:</label>
-    <textarea id="text" name="text" th:field="*{text}" rows="10" cols="50" required></textarea>
-    <div th:if="${#fields.hasErrors('text')}" style="color: red;">
-        <p th:each="error : ${#fields.errors('text')}" th:text="${error}"></p>
-    </div>
-    <br/>
-    //
-    <label for="status">Status:</label>
-    <select id="status" name="status" th:field="*{status}" required>
-        <option th:each="status : ${statuses}"
-                th:value="${status.name()}"
-                th:text="${status}"></option>
-    </select>
-    <br/>
+</nav>
 
-    <button type="submit">Обновить задачу</button>
-</form>
-<br>
-<a href="/tasks">Обратно к задачам</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">TaskTracker 2025</a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="text-center">Обновить задачу</h2>
+    <form th:method="PATCH" th:action="@{/tasks/{id}(id=${taskDTO.id})}" th:object="${taskDTO}">
+        <div class="form-group">
+            <label for="description">Описание:</label>
+            <textarea id="description" name="description" th:field="*{description}" class="form-control" rows="2" required></textarea>
+            <div th:if="${#fields.hasErrors('description')}" style="color: red;">
+                <p th:each="error : ${#fields.errors('description')}" th:text="${error}"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="text">Текст:</label>
+            <textarea id="text" name="text" th:field="*{text}" class="form-control" rows="10"></textarea>
+            <div th:if="${#fields.hasErrors('text')}" style="color: red;">
+                <p th:each="error : ${#fields.errors('text')}" th:text="${error}"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="status">Статус:</label>
+            <select id="status" name="status" th:field="*{status}" class="form-control" required>
+                <option th:each="status : ${statuses}"
+                        th:value="${status.name()}"
+                        th:text="${status}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Обновить задачу</button>
+    </form>
+    <br>
+    <div class="text-center">
+        <a href="/tasks" class="btn btn-secondary">Обратно к задачам</a>
+    </div>
+</div>
 </body>
 </html>
