@@ -1,6 +1,8 @@
 package com.avdei.spring1app.validator;
 
 import com.avdei.spring1app.dto.PersonCreateDTO;
+import com.avdei.spring1app.dto.PersonUpdateDTO;
+import com.avdei.spring1app.dto.TaskUpdateDTO;
 import com.avdei.spring1app.mapper.PersonMapper;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.service.PeopleService;
@@ -28,23 +30,34 @@ public class PersonValidator implements Validator {
     @Override
     public boolean supports(Class<?> clazz) {
 
-        return PersonCreateDTO.class.equals(clazz);
+        return PersonCreateDTO.class.equals(clazz) || PersonUpdateDTO.class.equals(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
         validator.validate(target, errors);
+        Person person;
+        PersonUpdateDTO personUpdateDTO = null;
 
-        PersonCreateDTO personCreateDTO = (PersonCreateDTO) target;
-        Person person = personMapper.map(personCreateDTO);
-
-        if (peopleService.getPersonByUserName(person.getUserName()).isPresent()) {
-            errors.rejectValue("userName", "", "Person already exists");
-            log.warn("Validation error: Person already exists with userName {}", person.getUserName());
+        if (target instanceof PersonCreateDTO) {
+            PersonCreateDTO personCreateDTO = (PersonCreateDTO) target;
+            person = personMapper.map(personCreateDTO);
+        } else {
+            personUpdateDTO = (PersonUpdateDTO) target;
+            person = peopleService.getPersonById(personUpdateDTO.getId()).orElse(null);
         }
-        if (peopleService.getPersonByEmail(person.getEmail().trim().toLowerCase()).isPresent()) {
-            errors.rejectValue("email", "", "Email already exists");
-            log.warn("Validation error: Person already exists with email {}", person.getEmail());
+
+        if (person != null) {
+            if (peopleService.getPersonByUserName(person.getUserName()).isPresent() &&
+                    (personUpdateDTO == null || !person.getId().equals(personUpdateDTO.getId()))) {
+                errors.rejectValue("userName", "", "Person already exists");
+                log.warn("Validation error: Person already exists with userName {}", person.getUserName());
+            }
+            if (peopleService.getPersonByEmail(person.getEmail().trim().toLowerCase()).isPresent() &&
+                    (personUpdateDTO == null || !person.getId().equals(personUpdateDTO.getId()))) {
+                errors.rejectValue("email", "", "Email already exists");
+                log.warn("Validation error: Person already exists with email {}", person.getEmail());
+            }
         }
     }
 }

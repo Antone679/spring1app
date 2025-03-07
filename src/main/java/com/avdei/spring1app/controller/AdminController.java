@@ -37,10 +37,12 @@ public class AdminController {
 
     private final PeopleService peopleService;
     private final PersonMapper personMapper;
+    private final PersonValidator personValidator;
 
-    public AdminController(PeopleService peopleService, PersonMapper personMapper) {
+    public AdminController(PeopleService peopleService, PersonMapper personMapper, PersonValidator personValidator) {
         this.peopleService = peopleService;
         this.personMapper = personMapper;
+        this.personValidator = personValidator;
     }
     @GetMapping
     public String getUsers(@RequestParam(defaultValue = "0") int page,
@@ -90,8 +92,9 @@ public class AdminController {
 
 
     @PatchMapping("/{id}")
-    public String updateUser(@PathVariable int id, @ModelAttribute("personDTO") @Valid PersonUpdateDTO personUpdateDTO,
+    public String updateUser(@PathVariable int id, @ModelAttribute("personDTO") PersonUpdateDTO personUpdateDTO,
                              BindingResult bindingResult){
+        personValidator.validate(personUpdateDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "admin/edit";
