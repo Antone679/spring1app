@@ -45,27 +45,27 @@
 <br>
 <br>
 <h3 class="text-center">Все ваши задачи
-    <small class="text-muted">в одном месте</small></h3>
+    <small class="text-muted"><span class="badge bg-secondary text-white">в одном месте</span></small></h3>
 
 <div class="container mt-5">
-    <h2 class="text-center">Создать задачу:</h2>
+    <h2 class="text-center"><span class="badge bg-danger text-white">Создать задачу:</span></h2>
     <form method="POST" th:action="@{/tasks}" th:object="${taskCreateDTO}">
         <div class="form-group">
-            <label for="description">Описание:</label>
+            <label for="description"><span class="badge bg-danger text-white">Описание:</span></label>
             <textarea id="description" name="description" th:field="*{description}" class="form-control" rows="1" placeholder="От 3 до 30 символов" required></textarea>
             <div th:if="${#fields.hasErrors('description')}" style="color: red;">
                 <p th:each="error : ${#fields.errors('description')}" th:text="${error}"></p>
             </div>
         </div>
         <div class="form-group">
-            <label for="text">Текст:</label>
+            <label for="text"><span class="badge bg-success text-white">Текст:</span></label>
             <textarea id="text" name="text" th:field="*{text}" class="form-control" rows="10"></textarea>
             <div th:if="${#fields.hasErrors('text')}" style="color: red;">
                 <p th:each="error : ${#fields.errors('text')}" th:text="${error}"></p>
             </div>
         </div>
         <div class="form-group">
-            <label for="status">Статус:</label>
+            <label for="status"><span class="badge bg-danger text-white">Статус:</span></label>
             <select id="status" name="status" th:field="*{status}" class="form-control" required>
                 <option th:each="status : ${statuses}"
                         th:value="${status.name()}"

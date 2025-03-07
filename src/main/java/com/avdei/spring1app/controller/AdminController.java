@@ -1,24 +1,29 @@
 package com.avdei.spring1app.controller;
 
 import com.avdei.spring1app.dto.PersonDTO;
+import com.avdei.spring1app.dto.PersonUpdateDTO;
 import com.avdei.spring1app.dto.TaskDTO;
+import com.avdei.spring1app.dto.TaskUpdateDTO;
 import com.avdei.spring1app.mapper.PersonMapper;
 import com.avdei.spring1app.model.Person;
+import com.avdei.spring1app.model.Role;
+import com.avdei.spring1app.model.Status;
 import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.PeopleService;
 import com.avdei.spring1app.util.CurrentUserUtil;
 import com.avdei.spring1app.util.DurationConverter;
 import com.avdei.spring1app.validator.PersonValidator;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -32,12 +37,10 @@ public class AdminController {
 
     private final PeopleService peopleService;
     private final PersonMapper personMapper;
-    private final PersonValidator personValidator;
 
-    public AdminController(PeopleService peopleService, PersonMapper personMapper, PersonValidator personValidator) {
+    public AdminController(PeopleService peopleService, PersonMapper personMapper) {
         this.peopleService = peopleService;
         this.personMapper = personMapper;
-        this.personValidator = personValidator;
     }
     @GetMapping
     public String getUsers(@RequestParam(defaultValue = "0") int page,
@@ -66,6 +69,47 @@ public class AdminController {
         log.info("Users returned successfully");
         return "admin/users";
 
+    }
+    @DeleteMapping("{id}")
+    public String deleteUser(@PathVariable int id){
+        peopleService.deletePerson(id);
+        log.info("User has been removed successfully");
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editUser(@PathVariable int id, Model model) {
+
+        Person person = peopleService.getPersonById(id).get();
+        PersonUpdateDTO personDTO = personMapper.mapToUpdateDTO(person);
+        log.info("User has been found successfully");
+        model.addAttribute("personDTO", personDTO);
+        log.info("Template with the User has been sent successfully");
+        return "admin/edit";
+    }
+
+
+    @PatchMapping("/{id}")
+    public String updateUser(@PathVariable int id, @ModelAttribute("personDTO") @Valid PersonUpdateDTO personUpdateDTO,
+                             BindingResult bindingResult){
+
+        if (bindingResult.hasErrors()) {
+            return "admin/edit";
+        }
+        Person person = peopleService.getPersonById(id).get();
+        System.out.println("GOT TASK REPO");
+        personMapper.update(personUpdateDTO, person);
+        System.out.println("MAPPED TASK");
+        peopleService.update(person);
+        System.out.println("SAVED");
+        log.info("User has been updated successfully");
+
+        return "redirect:/admin";
+    }
+
+    @ModelAttribute
+    private void addCommonAttributes(Model model) {
+        model.addAttribute("roles", Role.values());
     }
 
     private static void setParameters(int page, Integer size, String sortBy, String sortDirection, Model model, Page<PersonDTO> personsDTO) {

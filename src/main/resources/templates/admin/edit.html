@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit user</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Admin mode</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks">Back to Normal Mode</a>
+                </li>
+            </ul>
+            <div class="ml-auto">
+                <form th:action="@{/logout}" th:method="POST" class="form-inline">
+                    <button type="submit" class="btn btn-light">Выход</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">TaskTracker Admin mode</a>
+    </div>
+</nav>
+
+<br>
+<br>
+<h3 class="text-center">Все пользователи приложения
+    <small class="text-muted"><span class="badge bg-secondary text-white">в одном месте</span></small></h3>
+
+<div class="container mt-5">
+    <h2 class="text-center"><span class="badge bg-danger text-white">Обновить данные пользователя</span></h2>
+    <form th:method="PATCH" th:action="@{/admin/{id}(id=${personDTO.id})}" th:object="${personDTO}">
+        <div class="form-group">
+            <label for="userName"><span class="badge bg-danger text-white">Username:</span></label>
+            <input type="text" id="userName" name="userName" th:field="*{userName}" class="form-control" required />
+            <div th:if="${#fields.hasErrors('userName')}" style="color: red;">
+                <p th:each="error : ${#fields.errors('userName')}" th:text="${error}"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password"><span class="badge bg-success text-white">New password:</span></label>
+            <input type="password" id="password" name="password" th:field="*{password}" class="form-control" required />
+            <div th:if="${#fields.hasErrors('password')}" style="color: red;">
+                <p th:each="error : ${#fields.errors('password')}" th:text="${error}"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email"><span class="badge bg-success text-white">Email:</span></label>
+            <input type="text" id="email" name="email" th:field="*{email}" class="form-control" required />
+            <div th:if="${#fields.hasErrors('email')}" style="color: red;">
+                <p th:each="error : ${#fields.errors('email')}" th:text="${error}"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="role"><span class="badge bg-danger text-white">Role:</span></label>
+            <select id="role" name="role" th:field="*{role}" class="form-control" required>
+                <option th:each="role : ${roles}"
+                        th:value="${role.name()}"
+                        th:text="${role}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-dark">Обновить пользователя</button>
+    </form>
+    <br>
+    <div class="text-center">
+        <a href="/admin" class="btn btn-secondary">Обратно к пользователям</a>
+    </div>
+</div>
+</body>
+</html>

@@ -18,6 +18,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PersonUpdateDTO {
+    Integer id;
     @Column(name = "username", nullable = false)
     @Size(min = 3, max = 100, message = "Name should be between 3 and 100 characters")
     @Pattern(regexp = "^[^\\d\\t ].*", message = "Name shouldn't start from digits or spaces")

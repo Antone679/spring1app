@@ -12,7 +12,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Admins mode</a>
+        <a class="navbar-brand" href="#">Admin mode</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -35,14 +35,14 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">TaskTracker Admins mode</a>
+        <a class="navbar-brand" href="#">TaskTracker Admin mode</a>
     </div>
 </nav>
 
 <br>
 <br>
 <h3 class="text-center">Все пользователи приложения
-    <small class="text-muted">в одном месте</small></h3>
+    <small class="text-muted"><span class="badge bg-secondary text-white">в одном месте</span></small></h3>
 <br>
 <div class="d-flex">
     <div class="sidebar">
@@ -71,7 +71,7 @@
                 <option value="15" th:selected="${size == 15}">15</option>
             </select>
 
-            <input type="hidden" name="page" th:value="${currentPage}"/>
+            <input type="hidden" name="page" value="0"/>
 
             <button type="submit" class="btn btn-dark">Применить сортировку</button>
         </form>

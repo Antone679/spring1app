@@ -51,7 +51,7 @@
 <br>
 <br>
 <h3 class="text-center">Все ваши задачи
-    <small class="text-muted">в одном месте</small></h3>
+    <small class="text-muted"><span class="badge bg-secondary text-white">в одном месте</span></small></h3>
 <br>
 <div class="d-flex">
     <div class="sidebar">
@@ -79,7 +79,7 @@
                 <option value="15" th:selected="${size == 15}">15</option>
             </select>
 
-            <input type="hidden" name="page" th:value="${currentPage}"/>
+            <input type="hidden" name="page" value="0"/>
 
             <button type="submit" class="btn btn-primary">Применить сортировку</button>
         </form>

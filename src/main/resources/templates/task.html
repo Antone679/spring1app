@@ -49,7 +49,7 @@
 <br>
 <br>
 <h3 class="text-center">Все ваши задачи
-    <small class="text-muted">в одном месте</small></h3>
+    <small class="text-muted"><span class="badge bg-secondary text-white">в одном месте</span></small></h3>
 
 <div class="container mt-5">
     <h2 class="text-center">Просмотр задачи ID: <span th:text="${taskDTO.id}"></span></h2>
@@ -61,7 +61,7 @@
             <h5 class="card-title" th:text="${taskDTO.description}"></h5>
             <p class="card-text" th:text="${taskDTO.text}"></p>
             <p class="text-muted">Время выполнения задачи: <span th:text="${taskDTO.currentShow}"></span></p>
-            <p class="text-muted">Статус: <span th:text="${taskDTO.status}"></span></p>
+            <p class="text-muted">Статус: <span class="badge bg-danger text-white"><span th:text="${taskDTO.status}"></span></span></p>
         </div>
         <div class="card-footer text-right">
             <a th:href="@{/tasks/edit/{id}(id=${taskDTO.id})}" class="btn btn-warning">Изменить</a>

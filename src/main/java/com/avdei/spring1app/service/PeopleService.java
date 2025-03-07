@@ -38,6 +38,10 @@ public class PeopleService {
         return peopleRepository.findByEmail(email);
     }
 
+    public Optional<Person> getPersonById(int id) {
+        return peopleRepository.findById(id);
+    }
+
     public Page<Person> getAllUsers(Pageable pageable) {
         return peopleRepository.findAll(pageable);
     }
@@ -46,6 +50,17 @@ public class PeopleService {
     public void savePerson(Person person) {
         person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
         person.setRole(Role.USER);
+        peopleRepository.save(person);
+    }
+
+    @Transactional
+    public void deletePerson(int id) {
+        peopleRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void update(Person person) {
+        person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
         peopleRepository.save(person);
     }
 }

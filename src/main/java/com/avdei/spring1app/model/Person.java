@@ -48,6 +48,6 @@ public class Person {
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
     Date updatedAt;
-    @OneToMany (mappedBy = "author", fetch = FetchType.LAZY)
+    @OneToMany (mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Task> tasks;
 }

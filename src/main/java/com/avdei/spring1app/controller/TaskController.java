@@ -158,7 +158,6 @@ public class TaskController {
         log.info("Task has been found successfully");
         model.addAttribute("taskDTO", taskDTO);
         log.info("Template with the Task has been sent successfully");
-        System.out.println(task.getDescription());
         return "edit";
     }
 

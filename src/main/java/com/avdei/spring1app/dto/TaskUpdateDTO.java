@@ -15,7 +15,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 public class TaskUpdateDTO {
-
     Integer id;
     @Column(nullable = false, unique = true)
     @Size(min = 3, max = 30, message = "Description should be between 3 and 30 characters")
