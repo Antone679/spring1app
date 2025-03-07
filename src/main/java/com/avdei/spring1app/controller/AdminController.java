@@ -100,11 +100,8 @@ public class AdminController {
             return "admin/edit";
         }
         Person person = peopleService.getPersonById(id).get();
-        System.out.println("GOT TASK REPO");
         personMapper.update(personUpdateDTO, person);
-        System.out.println("MAPPED TASK");
         peopleService.update(person);
-        System.out.println("SAVED");
         log.info("User has been updated successfully");
 
         return "redirect:/admin";

@@ -49,12 +49,15 @@ public class PersonValidator implements Validator {
 
         if (person != null) {
             if (peopleService.getPersonByUserName(person.getUserName()).isPresent() &&
-                    (personUpdateDTO == null || !person.getId().equals(personUpdateDTO.getId()))) {
+                    (personUpdateDTO == null || !person.getId().equals(personUpdateDTO.getId()) ||
+                            !person.getUserName().equals(personUpdateDTO.getUserName()))) {
                 errors.rejectValue("userName", "", "Person already exists");
                 log.warn("Validation error: Person already exists with userName {}", person.getUserName());
             }
+
             if (peopleService.getPersonByEmail(person.getEmail().trim().toLowerCase()).isPresent() &&
-                    (personUpdateDTO == null || !person.getId().equals(personUpdateDTO.getId()))) {
+                    (personUpdateDTO == null || !person.getId().equals(personUpdateDTO.getId()) ||
+                            !person.getEmail().equals(personUpdateDTO.getEmail()))) {
                 errors.rejectValue("email", "", "Email already exists");
                 log.warn("Validation error: Person already exists with email {}", person.getEmail());
             }
