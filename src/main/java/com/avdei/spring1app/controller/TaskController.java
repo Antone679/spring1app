@@ -1,13 +1,16 @@
 package com.avdei.spring1app.controller;
 
+import com.avdei.spring1app.dto.CommentDTO;
 import com.avdei.spring1app.dto.TaskCreateDTO;
 import com.avdei.spring1app.dto.TaskDTO;
 import com.avdei.spring1app.dto.TaskUpdateDTO;
+import com.avdei.spring1app.mapper.CommentMapper;
 import com.avdei.spring1app.mapper.TaskMapper;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Role;
 import com.avdei.spring1app.model.Status;
 import com.avdei.spring1app.model.Task;
+import com.avdei.spring1app.service.CommentService;
 import com.avdei.spring1app.service.TaskService;
 import com.avdei.spring1app.util.CurrentUserUtil;
 import com.avdei.spring1app.util.DurationConverter;
@@ -43,12 +46,14 @@ public class TaskController {
     private final TaskService taskService;
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
+    private final CommentMapper commentMapper;
 
     @Autowired
-    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, TaskMapper taskMapper) {
+    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, TaskMapper taskMapper, CommentMapper commentMapper) {
         this.taskService = taskService;
         this.taskValidator = taskValidator;
         this.taskMapper = taskMapper;
+        this.commentMapper = commentMapper;
     }
 
     @InitBinder("task")
@@ -110,13 +115,19 @@ public class TaskController {
             description = "Получает задачу по айди, выводит ее на отдельной странице, посвященной этой задаче")
     @GetMapping("/{id}")
     public String getTask(@PathVariable("id") int id, Model model) {
-        Optional<Task> task = taskService.getTaskById(id);
+        Optional<Task> optionalTask = taskService.getTaskById(id);
 
-        if (task.isEmpty()) {
+        if (optionalTask.isEmpty()) {
             return "redirect:/tasks";
 
         }
-        TaskDTO taskDTO = taskMapper.map(task.get());
+        Task task = optionalTask.get();
+        List<CommentDTO> commentDTOS = task.getComments()
+                .stream()
+                .map(commentMapper::map)
+                .toList();
+        TaskDTO taskDTO = taskMapper.map(task);
+        taskDTO.setComments(commentDTOS);
         updateDurationToBeShown(taskDTO);
 
         model.addAttribute("taskDTO", taskDTO);

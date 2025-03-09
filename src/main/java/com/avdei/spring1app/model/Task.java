@@ -42,6 +42,6 @@ public class Task {
     @JoinColumn(name = "author_id")
     Person author;
     boolean isActive;
-    @OneToMany (mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "task", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Comment> comments;
 }

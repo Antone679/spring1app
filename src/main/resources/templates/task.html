@@ -82,6 +82,22 @@
         </div>
     </div>
     <br>
+    <div class="comments-section">
+        <div th:each="comment : ${taskDTO.comments}">
+            <div class="card mb-3 bg-light" style="border-radius: 15px; max-width: 400px;">
+                <div class="card-header bg-warning" style="border-radius: 15px 15px 0 0;">
+                    <strong th:text="${comment.author != null ? comment.author.userName : 'Неизвестный автор'}"></strong>
+                    <span th:text="${#dates.format(comment.createdAt, 'dd.MM.yyyy')}"></span>
+                </div>
+                <div class="card-body">
+                    <p th:text="${comment.text}"></p>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(taskDTO.comments)}" class="alert alert-info">
+            Нет комментариев к этой задаче.
+        </div>
+    </div>
     <div class="text-center">
         <a href="/tasks" class="btn btn-secondary">Обратно к задачам</a>
     </div>

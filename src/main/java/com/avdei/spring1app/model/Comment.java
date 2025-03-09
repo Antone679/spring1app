@@ -26,7 +26,7 @@ public class Comment {
     @Pattern(regexp = "^[^\\d\\t ].*", message = "Comment shouldn't start from digits or spaces")
     String text;
     @JoinColumn(name = "author_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     Person author;
     @JoinColumn(name = "task_id")
     @ManyToOne(fetch = FetchType.LAZY)

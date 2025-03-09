@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -30,4 +31,5 @@ public class TaskDTO {
     Date updatedAt;
     Person author;
     LocalDate formattedCreationDate;
+    List<CommentDTO> comments;
 }
