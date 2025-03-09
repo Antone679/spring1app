@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
@@ -41,4 +42,6 @@ public class Task {
     @JoinColumn(name = "author_id")
     Person author;
     boolean isActive;
+    @OneToMany (mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    List<Comment> comments;
 }
