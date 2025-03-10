@@ -32,10 +32,12 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     Task task;
     @CreationTimestamp
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.DATE)
     Date createdAt;
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     Date updatedAt;
+    @Version
+    private Long version;
 
 }

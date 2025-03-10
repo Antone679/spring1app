@@ -11,6 +11,8 @@ import org.mapstruct.*;
 )
 public abstract class CommentMapper {
     public abstract void update(CommentDTO commentDTO, @MappingTarget Comment comment);
+    @Mapping(source = "commentText", target = "text")
     public abstract Comment map(CommentDTO commentDTO);
+    @Mapping(source = "text", target = "commentText")
     public abstract CommentDTO map(Comment comment);
 }

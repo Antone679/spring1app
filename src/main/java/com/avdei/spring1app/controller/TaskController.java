@@ -131,6 +131,7 @@ public class TaskController {
         updateDurationToBeShown(taskDTO);
 
         model.addAttribute("taskDTO", taskDTO);
+        model.addAttribute("commentDTO", new CommentDTO());
         log.info("Task returned successfully");
         return "task";
     }

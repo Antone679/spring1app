@@ -16,10 +16,11 @@ import java.util.Date;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentDTO {
+    Integer id;
     @Column(nullable = false, columnDefinition = "TEXT")
     @Size(min = 3, max = 300, message = "Comment should be between 3 and 300 characters")
     @Pattern(regexp = "^[^\\d\\t ].*", message = "Comment shouldn't start from digits or spaces")
-    String text;
+    String commentText;
     Person author;
     Task task;
     Date createdAt;
