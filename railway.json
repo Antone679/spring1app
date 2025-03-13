@@ -1,0 +1,8 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "start": {
+    "command": "java -jar spring1app.jar"
+  }
+}

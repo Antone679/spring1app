@@ -28,4 +28,10 @@ public class PersonDTO {
     Date createdAt;
     Date updatedAt;
     List<Task> tasks;
+
+    public PersonDTO(Integer id, String userName, String password){
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+    }
 }
