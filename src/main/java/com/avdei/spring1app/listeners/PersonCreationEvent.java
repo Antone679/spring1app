@@ -1,6 +1,6 @@
 package com.avdei.spring1app.listeners;
 
-import com.avdei.spring1app.domain.Person;
+import com.avdei.spring1app.model.Person;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

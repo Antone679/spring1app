@@ -4,33 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
-<h1>Просмотр задачи</h1>
-<table>
-    <thead>
-    <tr>
-        <th>Id</th>
-        <th>Description</th>
-        <th>Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td th:text="${task.id}"></td>
-        <td th:text="${task.description}"></td>
-        <td th:text="${task.status}"></td>
-        <td> <a th:href="@{/tasks/edit/{id}(id=${task.id})}">Изменить</a></td>
-        <td>
-            <form th:method="DELETE" th:action="@{/tasks/{id}(id=${task.id})}">
-                <button type="submit" class="delete-button" onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/tasks">
+            <img src="/css/logo.png" alt="TaskTracker" style="width: 45px; height: auto;"/>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks/new">Create new</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks?sortBy=id&sortDirection=asc&showMyTasks=true&page=&size=10">My Tasks</a>
+                </li>
+                <li class="nav-item" th:if="${admin}">
+                    <a class="nav-link" href="/admin">Admin Panel</a>
+                </li>
+            </ul>
+            <div class="ml-auto">
+                <form th:action="@{/logout}" th:method="POST" class="form-inline">
+                    <button type="submit" class="btn btn-light">Выход</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">TaskTracker 2025</a>
+    </div>
+</nav>
+
 <br>
-<a href="/tasks">Обратно к задачам</a>
+<br>
+<h3 class="text-center">Все ваши задачи
+    <small class="text-muted"><span class="badge bg-secondary text-white">в одном месте</span></small></h3>
+
+<div class="container mt-5">
+    <h2 class="text-center">Просмотр задачи ID: <span th:text="${taskDTO.id}"></span></h2>
+    <div class="card task-card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Автор: <span th:text="${taskDTO.author.userName}"></span></h5>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title" th:text="${taskDTO.description}"></h5>
+            <p class="card-text" th:text="${taskDTO.text}"></p>
+            <p class="text-muted">Время выполнения задачи: <span th:text="${taskDTO.currentShow}"></span></p>
+            <p class="text-muted">Статус: <span class="badge bg-danger text-white"><span
+                    th:text="${taskDTO.status}"></span></span></p>
+        </div>
+        <div class="card-footer text-right">
+            <div th:if="${taskDTO.author.id == isMyTask || admin}">
+                <form th:method="GET" th:action="@{/tasks/edit/{id}(id=${taskDTO.id})}" style="display:inline;">
+                    <button type="submit" class="btn btn-warning btn-sm">Изменить</button>
+                </form>
+                <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить
+                    </button>
+                </form>
+            </div>
+            <div th:if="${!(taskDTO.author.id == isMyTask || admin)}">
+                <div class="p-3 mb-2 bg-secondary text-white">
+                    Задача создана другим пользователем
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <h4 class="mt-4 badge bg-primary text-white">Комментарии</h4>
+        <div class="comments-section">
+            <div th:each="comment : ${taskDTO.comments}">
+                <div class="card mb-3 bg-light" style="border-radius: 15px; max-width: 400px;">
+                    <div class="card-header bg-primary text-white" style="border-radius: 15px 15px 0 0;">
+                        <strong th:text="${comment.author != null ? comment.author.userName : 'Неизвестный автор'}"></strong>
+                        <span th:text="${#dates.format(comment.createdAt, 'dd.MM.yyyy')}"></span>
+                    </div>
+                    <div class="card-body">
+                        <p th:text="${comment.commentText}"></p>
+                    </div>
+                    <div th:if="${comment.author.id == isMyTask || admin}">
+                        <form th:method="DELETE" th:action="@{/tasks/{taskId}/comments/{commentId}(taskId=${taskDTO.id}, commentId=${comment.id})}" style="display:inline;">
+    <span class="badge bg-danger text-white"
+          style="cursor: pointer; margin-left: 7px; margin-bottom: 5px;"
+          onclick="if(confirm('Вы уверены, что хотите удалить этот комментарий?')) { this.closest('form').submit(); }">
+        Удалить
+    </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(taskDTO.comments)}" class="alert alert-info">
+                Нет комментариев к этой задаче.
+            </div>
+
+            <div class="card mb-3" style="max-width: 400px;">
+                <div class="card-body">
+                    <form th:action="@{/tasks/{id}/comments(id=${taskDTO.id})}" method="post" th:object="${commentDTO}">
+                        <div class="form-group">
+                            <textarea id="commentText" name="commentText" class="form-control" rows="3" required placeholder="Введите ваш комментарий..."></textarea>
+                            <div th:if="${#fields.hasErrors('commentText')}" style="color: red;">
+                                <p th:each="error : ${#fields.errors('commentText')}" th:text="${error}"></p>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <a href="/tasks" class="btn btn-secondary">Обратно к задачам</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

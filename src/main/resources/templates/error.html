@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/tasks">TaskTracker</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks/new">Create new</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page"
+                       href="/tasks?sortBy=id&sortDirection=asc&showMyTasks=true&page=&size=10">My Tasks</a>
+                </li>
+                <li class="nav-item" th:if="${admin}">
+                    <a class="nav-link" href="/admin">Admin Panel</a>
+                </li>
+            </ul>
+            <div class="ml-auto">
+                <form th:action="@{/logout}" th:method="POST" class="form-inline">
+                    <button type="submit" class="btn btn-light">Выход</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-bottom">
+    <div class="container-fluid">
+        <a class="navbar-brand mx-auto" href="/tasks">TaskTracker 2025</a>
+    </div>
+</nav>
+
+<br>
+<br>
+<h3 class="text-center">Все ваши задачи
+    <small class="text-muted">в одном месте</small></h3>
+
+<div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <h4 class="text-center">Произошла ошибка:
+        <small class="text-muted" th:text="${code}"></small>
+            <small class="text-muted" th:text="${message}"></small></h4>
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 package com.avdei.spring1app.service;
 
-import com.avdei.spring1app.domain.Person;
+import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.repository.PeopleRepository;
 import com.avdei.spring1app.security.PersonDetails;
 import org.springframework.beans.factory.annotation.Autowired;
