@@ -12,6 +12,7 @@ import com.avdei.spring1app.model.Status;
 import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.CommentService;
 import com.avdei.spring1app.service.TaskService;
+import com.avdei.spring1app.service.TaskServiceImpl;
 import com.avdei.spring1app.util.CurrentUserUtil;
 import com.avdei.spring1app.util.DurationConverter;
 import com.avdei.spring1app.validator.TaskValidator;
@@ -43,17 +44,15 @@ import java.util.Optional;
 @Tag(name = "CRUD methods for Task's entities")
 @Slf4j
 public class TaskController {
-    private final TaskService taskService;
+    private final TaskServiceImpl taskService;
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
-    private final CommentMapper commentMapper;
 
     @Autowired
-    public TaskController(TaskService taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, TaskMapper taskMapper, CommentMapper commentMapper) {
+    public TaskController(TaskServiceImpl taskService, TaskValidator taskValidator, ApplicationEventPublisher publisher, TaskMapper taskMapper) {
         this.taskService = taskService;
         this.taskValidator = taskValidator;
         this.taskMapper = taskMapper;
-        this.commentMapper = commentMapper;
     }
 
     @InitBinder("task")
@@ -78,32 +77,7 @@ public class TaskController {
                            @RequestParam(defaultValue = "false") boolean showMyTasks,
                            Model model) {
 
-        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
-        Sort sort = Sort.by(direction, sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        Page<Task> tasks;
-
-        if (showMyTasks) {
-            Integer currentUserId = CurrentUserUtil.getCurrentUser().getId();
-            tasks = taskService.getMyTasks(currentUserId, pageable);
-        } else {
-            tasks = taskService.getAllTasks(pageable);
-        }
-
-        List<TaskDTO> tasksDTOList = tasks.getContent()
-                .stream()
-                .map(task -> {
-                    TaskDTO taskDTO = taskMapper.map(task);
-
-                    LocalDate localDate = DurationConverter.convertDateToLocalDate(task.getCreatedAt());
-                    taskDTO.setFormattedCreationDate(localDate);
-                    return taskDTO;
-                })
-                .toList();
-
-        Page<TaskDTO> tasksDTO = new PageImpl<>(tasksDTOList, pageable, tasks.getTotalElements());
-
+        Page<TaskDTO> tasksDTO = taskService.getAllTasks(page, size, sortBy, sortDirection, showMyTasks);
         setSortingAttributes(page, size, sortBy, sortDirection, showMyTasks, model, tasksDTO);
 
         log.info("Tasks returned successfully");
@@ -115,22 +89,13 @@ public class TaskController {
             description = "Получает задачу по айди, выводит ее на отдельной странице, посвященной этой задаче")
     @GetMapping("/{id}")
     public String getTask(@PathVariable("id") int id, Model model) {
-        Optional<Task> optionalTask = taskService.getTaskById(id);
+        Optional<TaskDTO> optionalTask = taskService.getTaskById(id);
 
         if (optionalTask.isEmpty()) {
             return "redirect:/tasks";
 
         }
-        Task task = optionalTask.get();
-        List<CommentDTO> commentDTOS = task.getComments()
-                .stream()
-                .map(commentMapper::map)
-                .toList();
-        TaskDTO taskDTO = taskMapper.map(task);
-        taskDTO.setComments(commentDTOS);
-        updateDurationToBeShown(taskDTO);
-
-        model.addAttribute("taskDTO", taskDTO);
+        model.addAttribute("taskDTO", optionalTask.get());
         model.addAttribute("commentDTO", new CommentDTO());
         log.info("Task returned successfully");
         return "task";
@@ -154,9 +119,7 @@ public class TaskController {
         if (bindingResult.hasErrors()) {
             return "new";
         }
-        Task task = taskMapper.map(taskCreateDTO);
-
-        taskService.save(task);
+        taskService.save(taskCreateDTO);
         log.info("Task saved successfully");
         return "redirect:/tasks";
     }
@@ -165,7 +128,7 @@ public class TaskController {
             description = "Получает запрос на редактирование существующей задачи, отправляет форму для редактирования с требуемой задачей")
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
-        Task task = taskService.getTaskById(id).get();
+        TaskDTO task = taskService.getTaskById(id).get();
         TaskUpdateDTO taskDTO = taskMapper.mapToUpdateDTO(task);
         log.info("Task has been found successfully");
         model.addAttribute("taskDTO", taskDTO);
@@ -183,10 +146,8 @@ public class TaskController {
         if (bindingResult.hasErrors()) {
             return "edit";
         }
-        Task task = taskService.getTaskById(id).get();
-        taskMapper.update(taskUpdateDTO, task);
 
-        taskService.save(task);
+        taskService.update(id, taskUpdateDTO);
         log.info("Task has been updated successfully");
 
         return "redirect:/tasks/" + id;
@@ -215,22 +176,6 @@ public class TaskController {
         model.addAttribute("isMyTask", isMyTask);
     }
 
-    private void updateDurationToBeShown(TaskDTO taskDTO) {
-        String durationAsString;
-        if (taskDTO.getStatus() == Status.IN_PROGRESS) {
-            Instant now = Instant.now();
-            Instant updatedAt = taskDTO.getUpdatedAt().toInstant();
-            long durationSinceLastUpdate = Duration.between(updatedAt, now).toMillis();
-            durationAsString = DurationConverter
-                    .formatDuration(taskDTO.getDuration() + durationSinceLastUpdate);
-            taskDTO.setCurrentShow(durationAsString);
-        } else {
-            durationAsString = DurationConverter.formatDuration(taskDTO.getDuration());
-            if (durationAsString.isBlank())
-                durationAsString = "0";
-            taskDTO.setCurrentShow(durationAsString);
-        }
-    }
     private static void setSortingAttributes(int page, Integer size, String sortBy, String sortDirection, boolean showMyTasks, Model model, Page<TaskDTO> tasksDTO) {
         model.addAttribute("tasksDTO", tasksDTO);
         model.addAttribute("sortBy", sortBy);

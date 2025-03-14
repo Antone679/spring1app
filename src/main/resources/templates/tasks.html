@@ -67,8 +67,8 @@
             <label for="sortDirection">Порядок:</label>
             <select name="sortDirection" id="sortDirection" class="form-control mb-2">
                 <option value="" th:selected="${sortDirection == ''}">-- Выберите --</option>
-                <option value="asc" th:selected="${sortDirection == 'asc'}">Возрастание</option>
-                <option value="desc" th:selected="${sortDirection == 'desc'}">Убывание</option>
+                <option value="asc" th:selected="${sortDirection == 'asc'}">Старые</option>
+                <option value="desc" th:selected="${sortDirection == 'desc'}">Новые</option>
             </select>
 
             <label for="size">Задач на странице:</label>
@@ -80,6 +80,10 @@
             </select>
 
             <input type="hidden" name="page" value="0"/>
+            <div class="form-check mb-2">
+                <input type="checkbox" class="form-check-input" id="showMyTasks" name="showMyTasks" th:checked="${showMyTasks}"/>
+                <label class="form-check-label" for="showMyTasks">По моим задачам</label>
+            </div>
 
             <button type="submit" class="btn btn-primary">Применить сортировку</button>
         </form>
