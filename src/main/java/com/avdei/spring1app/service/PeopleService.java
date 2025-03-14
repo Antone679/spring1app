@@ -1,5 +1,7 @@
 package com.avdei.spring1app.service;
 
+import com.avdei.spring1app.dto.PersonCreateDTO;
+import com.avdei.spring1app.mapper.PersonMapper;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Role;
 import com.avdei.spring1app.repository.PeopleRepository;
@@ -23,11 +25,13 @@ public class PeopleService {
 
     private final PeopleRepository peopleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PersonMapper personMapper;
 
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public PeopleService(PeopleRepository peopleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PersonMapper personMapper) {
         this.peopleRepository = peopleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.personMapper = personMapper;
     }
 
     public Optional<Person> getPersonByUserName(String username) {
@@ -47,7 +51,10 @@ public class PeopleService {
     }
 
     @Transactional
-    public void savePerson(Person person) {
+    public void savePerson(PersonCreateDTO personCreateDTO) {
+        Person person = personMapper.map(personCreateDTO);
+        String normalizedEmail = person.getEmail().trim().toLowerCase();
+        person.setEmail(normalizedEmail);
         person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
         person.setRole(Role.USER);
         peopleRepository.save(person);

@@ -10,10 +10,10 @@ public class PersonEventListener {
 
     @EventListener
     public void handleUserCreationEvent(PersonCreationEvent event) {
-        log.warn("NAME OF CREATED PERSON: {}", event.getPerson().getUserName());
+        log.warn("NAME OF CREATED PERSON: {}", event.getPersonCreateDTO().getUserName());
     }
     @EventListener
     public void handleUserUpdateEvent(PersonUpdateEvent event) {
-        log.warn("NAME OF UPDATED PERSON: {}", event.getPerson().getUserName());
+        log.warn("NAME OF UPDATED PERSON: {}", event.getPersonUpdateDTO().getUserName());
     }
 }

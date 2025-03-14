@@ -1,6 +1,7 @@
 package com.avdei.spring1app.controller;
 
 import com.avdei.spring1app.dto.PersonCreateDTO;
+import com.avdei.spring1app.listeners.PersonCreationEvent;
 import com.avdei.spring1app.mapper.PersonMapper;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.listeners.PersonUpdateEvent;
@@ -79,12 +80,8 @@ public class AuthenticationController {
             return "auth/registration";
         }
 
-        Person person = personMapper.map(personCreateDTO);
-        String normalizedEmail = person.getEmail().trim().toLowerCase();
-        person.setEmail(normalizedEmail);
-
-        peopleService.savePerson(person);
-        ApplicationEvent event = new PersonUpdateEvent(this, person);
+        peopleService.savePerson(personCreateDTO);
+        ApplicationEvent event = new PersonCreationEvent(this, personCreateDTO);
         publisher.publishEvent(event);
         return "redirect:/auth/login";
 
