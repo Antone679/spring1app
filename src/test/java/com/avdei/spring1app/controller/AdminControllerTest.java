@@ -21,16 +21,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class AdminControllerTest {
     @Autowired
@@ -54,7 +57,7 @@ class AdminControllerTest {
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
     @Test
-    public void performGetUsers_withAllParams_andGetCorrectResult() throws Exception {
+    public void testPerformGetUsersWithAllParamsAndGetCorrectResult() throws Exception {
         List<Person> mockPersons = List.of(new Person(), new Person(), new Person());
         Page<Person> mockPage = new PageImpl<>(mockPersons);
 
@@ -69,6 +72,25 @@ class AdminControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/users"))
-                .andExpect(model().attributeExists("personsDTO"));
+                .andExpect(model().attributeExists("personsDTO"))
+                .andExpect(content().string(containsString("Stays")));
     }
+
+    @Test
+    public void testPerformGetUsersAndGetCorrectResultWhenNoUsers() throws Exception {
+        List<Person> mockPersons = List.of();
+        Page<Person> mockPage = new PageImpl<>(mockPersons);
+
+        when(peopleService.getAllUsers(any(Pageable.class))).thenReturn(mockPage);
+
+        mockMvc.perform(get("/admin")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/users"))
+                .andExpect(model().attributeExists("personsDTO"))
+                .andExpect(model().attribute("personsDTO", emptyIterable()));
+
+    }
+
+
 }

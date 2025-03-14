@@ -50,5 +50,4 @@ public class Person {
     @OneToMany (mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Comment> comments;
 
-
 }
