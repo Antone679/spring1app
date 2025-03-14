@@ -168,7 +168,7 @@ public class TaskController {
     }
 
     @ModelAttribute
-    private void checkAdminRights(Model model) {
+    private void checkAdminAndEditorRights(Model model) {
         Person currentUser = CurrentUserUtil.getCurrentUser();
         boolean isAdmin = currentUser.getRole() == Role.ADMIN;
         Integer isMyTask = currentUser.getId();

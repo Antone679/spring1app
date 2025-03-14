@@ -10,6 +10,7 @@ import org.mapstruct.*;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public abstract class CommentMapper {
+    @Mapping(source = "commentText", target = "text")
     public abstract void update(CommentDTO commentDTO, @MappingTarget Comment comment);
     @Mapping(source = "commentText", target = "text")
     public abstract Comment map(CommentDTO commentDTO);

@@ -8,9 +8,11 @@ import com.avdei.spring1app.model.Comment;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Role;
 import com.avdei.spring1app.model.Task;
+import com.avdei.spring1app.repository.TaskRepository;
 import com.avdei.spring1app.service.CommentService;
 import com.avdei.spring1app.service.PeopleService;
 import com.avdei.spring1app.service.TaskService;
+import com.avdei.spring1app.service.TaskServiceImpl;
 import com.avdei.spring1app.util.CurrentUserUtil;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -29,17 +31,11 @@ import java.util.Optional;
 public class CommentController {
 
     private final CommentService commentService;
-    private final TaskService taskService;
-    private final CommentMapper commentMapper;
-    private final PeopleService peopleService;
-    private final TaskMapper taskMapper;
+    private final TaskServiceImpl taskService;
 
-    public CommentController(CommentService commentService, TaskService taskService, CommentMapper commentMapper, PeopleService peopleService, TaskMapper taskMapper) {
+    public CommentController(CommentService commentService, TaskServiceImpl taskService) {
         this.commentService = commentService;
         this.taskService = taskService;
-        this.commentMapper = commentMapper;
-        this.peopleService = peopleService;
-        this.taskMapper = taskMapper;
     }
 
     @PostMapping("/tasks/{id}/comments")
@@ -47,22 +43,12 @@ public class CommentController {
                                 BindingResult bindingResult, Principal principal, Model model) {
 
         if (bindingResult.hasErrors()) {
-            TaskDTO taskDTO = taskMapper.map(taskService.getTaskById(id).get());
+            TaskDTO taskDTO = taskService.getTaskById(id).get();
             model.addAttribute("taskDTO", taskDTO);
             model.addAttribute("commentDTO", commentDTO);
             return "task";
         }
-
-        Comment comment = new Comment();
-        comment.setText(commentDTO.getCommentText());
-        Optional<Person> author = peopleService.getPersonByUserName(principal.getName());
-        Optional<Task> task = taskService.getTaskById(id);
-
-        if (author.isPresent() && task.isPresent()) {
-            comment.setAuthor(author.get());
-            comment.setTask(task.get());
-            commentService.createComment(comment);
-        }
+        commentService.createComment(id, commentDTO, principal);
 
         return "redirect:/tasks/" + id;
     }
@@ -75,7 +61,7 @@ public class CommentController {
     }
 
     @ModelAttribute
-    private void checkAdminRights(Model model) {
+    private void checkAdminAndEditorRights(Model model) {
         Person currentUser = CurrentUserUtil.getCurrentUser();
         boolean isAdmin = currentUser.getRole() == Role.ADMIN;
         Integer isMyTask = currentUser.getId();
