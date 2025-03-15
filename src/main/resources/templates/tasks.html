@@ -35,7 +35,7 @@
             </ul>
             <div class="ml-auto">
                 <form th:action="@{/logout}" th:method="POST" class="form-inline">
-                    <button type="submit" class="btn btn-light">Выход</button>
+                    <button type="submit" class="btn btn-light">Exit</button>
                 </form>
             </div>
         </div>
@@ -50,30 +50,30 @@
 
 <br>
 <br>
-<h3 class="text-center">Все ваши задачи
-    <small class="text-muted"><span class="badge bg-secondary text-white">в одном месте</span></small></h3>
+<h3 class="text-center">All your tasks
+    <small class="text-muted"><span class="badge bg-secondary text-white">in one place</span></small></h3>
 <br>
 <div class="d-flex">
     <div class="sidebar">
         <form th:action="@{/tasks}" method="get">
-            <label for="sortBy">Отсортировать:</label>
+            <label for="sortBy">Sort:</label>
             <select name="sortBy" id="sortBy" class="form-control mb-2">
-                <option value="" th:selected="${sortBy == ''}">-- Выберите --</option>
-                <option value="id" th:selected="${sortBy == 'id'}">ID</option>
-                <option value="status" th:selected="${sortBy == 'status'}">Статус</option>
-                <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Дата создания</option>
+                <option value="" th:selected="${sortBy == ''}">-- Choose --</option>
+                <option value="id" th:selected="${sortBy == 'id'}">Id</option>
+                <option value="status" th:selected="${sortBy == 'status'}">Status</option>
+                <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Created</option>
             </select>
 
-            <label for="sortDirection">Порядок:</label>
+            <label for="sortDirection">Order:</label>
             <select name="sortDirection" id="sortDirection" class="form-control mb-2">
-                <option value="" th:selected="${sortDirection == ''}">-- Выберите --</option>
-                <option value="asc" th:selected="${sortDirection == 'asc'}">Старые</option>
-                <option value="desc" th:selected="${sortDirection == 'desc'}">Новые</option>
+                <option value="" th:selected="${sortDirection == ''}">-- Choose --</option>
+                <option value="asc" th:selected="${sortDirection == 'asc'}">Older</option>
+                <option value="desc" th:selected="${sortDirection == 'desc'}">New</option>
             </select>
 
-            <label for="size">Задач на странице:</label>
+            <label for="size">Tasks per page:</label>
             <select name="size" id="size" class="form-control mb-2">
-                <option value="" th:selected="${size == ''}">-- Выберите --</option>
+                <option value="" th:selected="${size == ''}">-- Choose --</option>
                 <option value="5" th:selected="${size == 5}">5</option>
                 <option value="10" th:selected="${size == 10}">10</option>
                 <option value="15" th:selected="${size == 15}">15</option>
@@ -82,10 +82,10 @@
             <input type="hidden" name="page" value="0"/>
             <div class="form-check mb-2">
                 <input type="checkbox" class="form-check-input" id="showMyTasks" name="showMyTasks" th:checked="${showMyTasks}"/>
-                <label class="form-check-label" for="showMyTasks">По моим задачам</label>
+                <label class="form-check-label" for="showMyTasks">Only mine tasks</label>
             </div>
 
-            <button type="submit" class="btn btn-primary">Применить сортировку</button>
+            <button type="submit" class="btn btn-primary">Implement sorting</button>
         </form>
     </div>
 
@@ -111,17 +111,17 @@
                 <td>
                     <div th:if="${taskDTO.author.id == isMyTask || admin}">
                         <form th:method="GET" th:action="@{/tasks/edit/{id}(id=${taskDTO.id})}" style="display:inline;">
-                            <button type="submit" class="btn btn-warning btn-sm">Изменить</button>
+                            <button type="submit" class="btn btn-warning btn-sm">Edit</button>
                         </form>
                         <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Вы уверены, что хотите удалить эту задачу?');">Удалить
+                                    onclick="return confirm('Sure you want to remove this task?');">Remove
                             </button>
                         </form>
                     </div>
                     <div th:if="${!(taskDTO.author.id == isMyTask || admin)}">
                         <div class="p-3 mb-2 bg-secondary text-white">
-                        Задача создана другим пользователем
+                        Task has been created by another User
                         </div>
                     </div>
                 </td>
@@ -129,17 +129,17 @@
             </tbody>
         </table>
         <div th:if="${tasksDTO.totalElements > 0}">
-            <span class="badge bg-primary text-white">Страница: <span th:text="${tasksDTO.number + 1}"></span></span>
-            <span class="badge bg-primary text-white"> из <span th:text="${tasksDTO.totalPages}"></span></span>
+            <span class="badge bg-primary text-white">Page: <span th:text="${tasksDTO.number + 1}"></span></span>
+            <span class="badge bg-primary text-white"> of <span th:text="${tasksDTO.totalPages}"></span></span>
         </div>
         <br>
         <div th:if="${tasksDTO.totalElements > 0}">
             <a th:if="${tasksDTO.hasPrevious()}"
                th:href="@{/tasks(page=${tasksDTO.number - 1}, size=${tasksDTO.size}, sortBy=${sortBy}, sortDirection=${sortDirection}, showMyTasks=${showMyTasks})}"
-               class="btn btn-primary">Назад</a>
+               class="btn btn-primary">Back</a>
             <a th:if="${tasksDTO.hasNext()}"
                th:href="@{/tasks(page=${tasksDTO.number + 1}, size=${tasksDTO.size}, sortBy=${sortBy}, sortDirection=${sortDirection}, showMyTasks=${showMyTasks})}"
-               class="btn btn-primary">Вперед</a>
+               class="btn btn-primary">Forward</a>
         </div>
     </div>
 </div>

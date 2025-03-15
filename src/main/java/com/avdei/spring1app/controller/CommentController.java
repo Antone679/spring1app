@@ -2,16 +2,9 @@ package com.avdei.spring1app.controller;
 
 import com.avdei.spring1app.dto.CommentDTO;
 import com.avdei.spring1app.dto.TaskDTO;
-import com.avdei.spring1app.mapper.CommentMapper;
-import com.avdei.spring1app.mapper.TaskMapper;
-import com.avdei.spring1app.model.Comment;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Role;
-import com.avdei.spring1app.model.Task;
-import com.avdei.spring1app.repository.TaskRepository;
 import com.avdei.spring1app.service.CommentService;
-import com.avdei.spring1app.service.PeopleService;
-import com.avdei.spring1app.service.TaskService;
 import com.avdei.spring1app.service.TaskServiceImpl;
 import com.avdei.spring1app.util.CurrentUserUtil;
 import jakarta.validation.Valid;
@@ -23,7 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Optional;
 
 @Controller
 @Getter

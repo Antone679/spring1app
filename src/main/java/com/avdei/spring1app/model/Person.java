@@ -47,7 +47,7 @@ public class Person {
     Date updatedAt;
     @OneToMany (mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Task> tasks;
-    @OneToMany (mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany (mappedBy = "author", fetch = FetchType.LAZY)
     List<Comment> comments;
 
 }

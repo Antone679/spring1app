@@ -4,8 +4,10 @@ import com.avdei.spring1app.dto.PersonCreateDTO;
 import com.avdei.spring1app.dto.PersonDTO;
 import com.avdei.spring1app.dto.PersonUpdateDTO;
 import com.avdei.spring1app.mapper.PersonMapper;
+import com.avdei.spring1app.model.Comment;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Role;
+import com.avdei.spring1app.repository.CommentRepository;
 import com.avdei.spring1app.repository.PeopleRepository;
 import com.avdei.spring1app.util.CurrentUserUtil;
 import lombok.Getter;
@@ -28,12 +30,14 @@ public class PeopleService {
     private final PeopleRepository peopleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PersonMapper personMapper;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PersonMapper personMapper) {
+    public PeopleService(PeopleRepository peopleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PersonMapper personMapper, CommentRepository commentRepository) {
         this.peopleRepository = peopleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.personMapper = personMapper;
+        this.commentRepository = commentRepository;
     }
 
     public Optional<Person> getPersonByUserName(String username) {
@@ -93,6 +97,12 @@ public class PeopleService {
 
     @Transactional
     public void deletePerson(int id) {
+        List<Comment> comments = commentRepository.findByAuthorId(id);
+        for (Comment comment : comments) {
+            comment.setAuthor(null);
+        }
+        commentRepository.saveAll(comments);
+
         peopleRepository.deleteById(id);
     }
 

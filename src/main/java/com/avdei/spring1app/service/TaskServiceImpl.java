@@ -74,10 +74,6 @@ public class TaskServiceImpl {
 
     }
 
-    public Page<Task> getMyTasks(Integer userId, Pageable pageable) {
-        return taskRepository.findByAuthorId(userId, pageable);
-    }
-
     public Optional<TaskDTO> getTaskById(int id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
 
