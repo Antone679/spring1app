@@ -1,6 +1,7 @@
 package com.avdei.spring1app.service;
 
 import com.avdei.spring1app.dto.PersonCreateDTO;
+import com.avdei.spring1app.dto.PersonUpdateDTO;
 import com.avdei.spring1app.mapper.PersonMapper;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Role;
@@ -46,6 +47,10 @@ public class PeopleService {
         return peopleRepository.findById(id);
     }
 
+    public Optional<PersonUpdateDTO> getPersonDTOById(int id) {
+        return Optional.of(personMapper.mapToUpdateDTO(peopleRepository.findById(id).get()));
+    }
+
     public Page<Person> getAllUsers(Pageable pageable) {
         return peopleRepository.findAll(pageable);
     }
@@ -59,15 +64,20 @@ public class PeopleService {
         person.setRole(Role.USER);
         peopleRepository.save(person);
     }
+    @Transactional
+    public void updatePerson(int id, PersonUpdateDTO personUpdateDTO) {
+
+        Person person = peopleRepository.findById(id).get();
+        personMapper.update(personUpdateDTO, person);
+        String normalizedEmail = person.getEmail().trim().toLowerCase();
+        person.setEmail(normalizedEmail);
+        person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
+        peopleRepository.save(person);
+    }
 
     @Transactional
     public void deletePerson(int id) {
         peopleRepository.deleteById(id);
     }
 
-    @Transactional
-    public void update(Person person) {
-        person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
-        peopleRepository.save(person);
-    }
 }

@@ -2,11 +2,8 @@ package com.avdei.spring1app.controller;
 
 import com.avdei.spring1app.dto.PersonCreateDTO;
 import com.avdei.spring1app.listeners.PersonCreationEvent;
-import com.avdei.spring1app.mapper.PersonMapper;
-import com.avdei.spring1app.model.Person;
-import com.avdei.spring1app.listeners.PersonUpdateEvent;
 import com.avdei.spring1app.service.PeopleService;
-import com.avdei.spring1app.validator.PersonValidator;
+import com.avdei.spring1app.validator.PersonCreateValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,16 +30,14 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AuthenticationController {
     final PeopleService peopleService;
-    final PersonValidator personValidator;
+    final PersonCreateValidator personValidator;
     final ApplicationEventPublisher publisher;
-    final PersonMapper personMapper;
 
     @Autowired
-    public AuthenticationController(PeopleService peopleService, PersonValidator personValidator, ApplicationEventPublisher publisher, PersonMapper personMapper) {
+    public AuthenticationController(PeopleService peopleService, PersonCreateValidator personValidator, ApplicationEventPublisher publisher) {
         this.peopleService = peopleService;
         this.personValidator = personValidator;
         this.publisher = publisher;
-        this.personMapper = personMapper;
     }
 
     @InitBinder("personCreateDTO")

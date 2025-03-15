@@ -12,7 +12,8 @@ import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.PeopleService;
 import com.avdei.spring1app.util.CurrentUserUtil;
 import com.avdei.spring1app.util.DurationConverter;
-import com.avdei.spring1app.validator.PersonValidator;
+import com.avdei.spring1app.validator.PersonCreateValidator;
+import com.avdei.spring1app.validator.PersonUpdateValidator;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +38,12 @@ public class AdminController {
 
     private final PeopleService peopleService;
     private final PersonMapper personMapper;
-    private final PersonValidator personValidator;
+    private final PersonUpdateValidator personUpdateValidator;
 
-    public AdminController(PeopleService peopleService, PersonMapper personMapper, PersonValidator personValidator) {
+    public AdminController(PeopleService peopleService, PersonMapper personMapper, PersonUpdateValidator personUpdateValidator) {
         this.peopleService = peopleService;
         this.personMapper = personMapper;
-        this.personValidator = personValidator;
+        this.personUpdateValidator = personUpdateValidator;
     }
     @GetMapping
     public String getUsers(@RequestParam(defaultValue = "0") int page,
@@ -81,11 +82,7 @@ public class AdminController {
 
     @GetMapping("/edit/{id}")
     public String editUser(@PathVariable int id, Model model) {
-
-        Person person = peopleService.getPersonById(id).get();
-        PersonUpdateDTO personDTO = personMapper.mapToUpdateDTO(person);
-        log.info("User has been found successfully");
-        model.addAttribute("personDTO", personDTO);
+        model.addAttribute("personDTO", peopleService.getPersonDTOById(id).get());
         log.info("Template with the User has been sent successfully");
         return "admin/edit";
     }
@@ -94,14 +91,12 @@ public class AdminController {
     @PatchMapping("/{id}")
     public String updateUser(@PathVariable int id, @ModelAttribute("personDTO") PersonUpdateDTO personUpdateDTO,
                              BindingResult bindingResult){
-        personValidator.validate(personUpdateDTO, bindingResult);
+        personUpdateValidator.validate(personUpdateDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "admin/edit";
         }
-        Person person = peopleService.getPersonById(id).get();
-        personMapper.update(personUpdateDTO, person);
-        peopleService.update(person);
+        peopleService.updatePerson(id, personUpdateDTO);
         log.info("User has been updated successfully");
 
         return "redirect:/admin";
