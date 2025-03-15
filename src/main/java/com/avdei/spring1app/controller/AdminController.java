@@ -2,32 +2,18 @@ package com.avdei.spring1app.controller;
 
 import com.avdei.spring1app.dto.PersonDTO;
 import com.avdei.spring1app.dto.PersonUpdateDTO;
-import com.avdei.spring1app.dto.TaskDTO;
-import com.avdei.spring1app.dto.TaskUpdateDTO;
 import com.avdei.spring1app.mapper.PersonMapper;
-import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Role;
-import com.avdei.spring1app.model.Status;
-import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.service.PeopleService;
-import com.avdei.spring1app.util.CurrentUserUtil;
-import com.avdei.spring1app.util.DurationConverter;
-import com.avdei.spring1app.validator.PersonCreateValidator;
 import com.avdei.spring1app.validator.PersonUpdateValidator;
-import jakarta.validation.Valid;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Controller
 @Slf4j
@@ -52,21 +38,7 @@ public class AdminController {
                            @RequestParam(defaultValue = "asc") String sortDirection,
                            Model model) {
 
-        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
-        Sort sort = Sort.by(direction, sortBy);
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        Page<Person> persons = peopleService.getAllUsers(pageable);
-        Integer currentUserId = CurrentUserUtil.getCurrentUser().getId();
-
-        List<PersonDTO> personDTOList = persons.getContent()
-                .stream()
-                .map(personMapper::map)
-                .filter(person -> !person.getId().equals(currentUserId))
-                .toList();
-
-        Page<PersonDTO> personsDTO = new PageImpl<>(personDTOList, pageable, persons.getTotalElements() - 1);
-
+        Page<PersonDTO> personsDTO = peopleService.getAllUsers(page, size, sortBy, sortDirection);
         setParameters(page, size, sortBy, sortDirection, model, personsDTO);
 
         log.info("Users returned successfully");

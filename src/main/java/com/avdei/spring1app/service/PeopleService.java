@@ -1,16 +1,17 @@
 package com.avdei.spring1app.service;
 
 import com.avdei.spring1app.dto.PersonCreateDTO;
+import com.avdei.spring1app.dto.PersonDTO;
 import com.avdei.spring1app.dto.PersonUpdateDTO;
 import com.avdei.spring1app.mapper.PersonMapper;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Role;
 import com.avdei.spring1app.repository.PeopleRepository;
+import com.avdei.spring1app.util.CurrentUserUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,8 +52,23 @@ public class PeopleService {
         return Optional.of(personMapper.mapToUpdateDTO(peopleRepository.findById(id).get()));
     }
 
-    public Page<Person> getAllUsers(Pageable pageable) {
-        return peopleRepository.findAll(pageable);
+    public Page<PersonDTO> getAllUsers(int page, int size, String sortBy,
+                                    String sortDirection) {
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Person> persons = peopleRepository.findAll(pageable);
+        Integer currentUserId = CurrentUserUtil.getCurrentUser().getId();
+
+        List<PersonDTO> personDTOList = persons.getContent()
+                .stream()
+                .map(personMapper::map)
+                .filter(person -> !person.getId().equals(currentUserId))
+                .toList();
+
+        return new PageImpl<>(personDTOList, pageable, persons.getTotalElements() - 1);
+
     }
 
     @Transactional
