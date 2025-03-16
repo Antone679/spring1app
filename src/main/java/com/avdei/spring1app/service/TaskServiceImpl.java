@@ -6,6 +6,7 @@ import com.avdei.spring1app.dto.TaskDTO;
 import com.avdei.spring1app.dto.TaskUpdateDTO;
 import com.avdei.spring1app.mapper.CommentMapper;
 import com.avdei.spring1app.mapper.TaskMapper;
+import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Status;
 import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.repository.TaskRepository;
@@ -107,7 +108,6 @@ public class TaskServiceImpl {
     public void update(int id, TaskUpdateDTO taskUpdateDTO) {
         Task task = taskRepository.findById(id).get();
         taskMapper.update(taskUpdateDTO, task);
-        task.setAuthor(CurrentUserUtil.getCurrentUser());
         ifTaskIsActiveAndSetDuration(task);
         taskRepository.save(task);
     }

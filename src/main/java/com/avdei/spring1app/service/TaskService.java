@@ -1,5 +1,6 @@
 package com.avdei.spring1app.service;
 
+import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Status;
 import com.avdei.spring1app.model.Task;
 import com.avdei.spring1app.repository.TaskRepository;

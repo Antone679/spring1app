@@ -1,14 +1,17 @@
 package com.avdei.spring1app.controller;
 
 import com.avdei.spring1app.model.Person;
+import com.avdei.spring1app.model.Role;
 import com.avdei.spring1app.repository.PeopleRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -28,6 +31,19 @@ class AuthenticationControllerTest {
     private MockMvc mockMvc;
     @Autowired
     PeopleRepository peopleRepository;
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @BeforeEach
+    public void setUp() {
+        Person testUser = new Person();
+        testUser.setUserName("Antone");
+        testUser.setPassword(bCryptPasswordEncoder.encode("Antone"));
+        testUser.setAge((short) 44);
+        testUser.setRole(Role.USER);
+        testUser.setEmail("test@example.com");
+        peopleRepository.save(testUser);
+    }
 
     @Test
     void testGetLoginPage() throws Exception {

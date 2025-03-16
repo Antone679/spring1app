@@ -102,7 +102,6 @@ public class PeopleService {
             comment.setAuthor(null);
         }
         commentRepository.saveAll(comments);
-
         peopleRepository.deleteById(id);
     }
 

@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +18,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 public class PersonUpdateDTO {
     Integer id;
     @Column(name = "username", nullable = false)
@@ -35,4 +37,10 @@ public class PersonUpdateDTO {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     Role role;
+
+    public PersonUpdateDTO(Integer id, String userName, String password) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+    }
 }

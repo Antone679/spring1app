@@ -1,5 +1,6 @@
 package com.avdei.spring1app.dto;
 
+import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.model.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
@@ -24,4 +25,5 @@ public class TaskUpdateDTO {
     String text;
     @Enumerated(EnumType.ORDINAL)
     Status status;
+    Person author;
 }

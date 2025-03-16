@@ -23,12 +23,10 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final PeopleService peopleService;
-    private final PersonMapper personMapper;
     private final PersonUpdateValidator personUpdateValidator;
 
-    public AdminController(PeopleService peopleService, PersonMapper personMapper, PersonUpdateValidator personUpdateValidator) {
+    public AdminController(PeopleService peopleService, PersonUpdateValidator personUpdateValidator) {
         this.peopleService = peopleService;
-        this.personMapper = personMapper;
         this.personUpdateValidator = personUpdateValidator;
     }
     @GetMapping

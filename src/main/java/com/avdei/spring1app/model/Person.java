@@ -50,4 +50,9 @@ public class Person {
     @OneToMany (mappedBy = "author", fetch = FetchType.LAZY)
     List<Comment> comments;
 
+    public Person(Integer id, String userName, String password) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+    }
 }
