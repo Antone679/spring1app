@@ -36,6 +36,7 @@ class AuthenticationControllerTest {
 
     @BeforeEach
     public void setUp() {
+        peopleRepository.deleteAll();
         Person testUser = new Person();
         testUser.setUserName("Antone");
         testUser.setPassword(bCryptPasswordEncoder.encode("Antone"));
@@ -43,14 +44,6 @@ class AuthenticationControllerTest {
         testUser.setRole(Role.USER);
         testUser.setEmail("test@example.com");
         peopleRepository.save(testUser);
-    }
-
-    @Test
-    void testGetLoginPage() throws Exception {
-        mockMvc.perform(get("/auth/login")
-                        .contentType(MediaType.TEXT_HTML))
-                .andExpect(status().isOk())
-                .andExpect(view().name("auth/login"));
     }
 
     @Test
@@ -65,6 +58,14 @@ class AuthenticationControllerTest {
 
                 .andExpect(status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/tasks"));
+    }
+
+    @Test
+    void testGetLoginPage() throws Exception {
+        mockMvc.perform(get("/auth/login")
+                        .contentType(MediaType.TEXT_HTML))
+                .andExpect(status().isOk())
+                .andExpect(view().name("auth/login"));
     }
 
     @Test
@@ -102,10 +103,10 @@ class AuthenticationControllerTest {
 
         mockMvc.perform(post("/auth/registration")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("userName", "Bilbo")
+                        .param("userName", "Johnny")
                         .param("age", "48")
                         .param("password", "password")
-                        .param("email", "test@example.com"))
+                        .param("email", "test@example.nx"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/auth/login"));
     }

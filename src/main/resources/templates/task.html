@@ -94,13 +94,24 @@
                     <div class="card-body">
                         <p th:text="${comment.commentText}"></p>
                     </div>
-                    <div th:if="${comment.author.id == isMyTask || admin}">
-                        <form th:method="DELETE" th:action="@{/tasks/{taskId}/comments/{commentId}(taskId=${taskDTO.id}, commentId=${comment.id})}" style="display:inline;">
-    <span class="badge bg-danger text-white"
+                    <div th:if="${comment.author != null && (comment.author.id == isMyTask || admin)}">
+                        <form th:method="DELETE"
+                              th:action="@{/tasks/{taskId}/comments/{commentId}(taskId=${taskDTO.id}, commentId=${comment.id})}"
+                              style="display:inline;">
+        <span class="badge bg-danger text-white"
+              style="cursor: pointer; margin-left: 7px; margin-bottom: 5px;"
+              onclick="if(confirm('Sure you want to remove this comment?')) { this.closest('form').submit(); }">
+            Remove
+        </span>
+                        </form>
+                    </div>
+                    <div th:if="${comment.author == null || comment.author.id == 0}">
+    <span th:if="${admin}" class="badge bg-danger text-white"
           style="cursor: pointer; margin-left: 7px; margin-bottom: 5px;"
           onclick="if(confirm('Sure you want to remove this comment?')) { this.closest('form').submit(); }">
         Remove
     </span>
+                    </div>
                         </form>
                     </div>
                 </div>

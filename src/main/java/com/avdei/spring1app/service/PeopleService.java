@@ -53,7 +53,7 @@ public class PeopleService {
     }
 
     public Optional<PersonUpdateDTO> getPersonDTOById(int id) {
-        return Optional.of(personMapper.mapToUpdateDTO(peopleRepository.findById(id).get()));
+        return Optional.of(personMapper.mapToUpdateDTO(peopleRepository.findById(id).orElseThrow()));
     }
 
     public Page<PersonDTO> getAllUsers(int page, int size, String sortBy,

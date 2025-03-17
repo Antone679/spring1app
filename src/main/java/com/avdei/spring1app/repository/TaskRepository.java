@@ -14,10 +14,10 @@ import java.util.Optional;
 public interface TaskRepository extends JpaRepository<Task, Integer> {
     Optional<Task> findByDescription(String description);
 
-    @EntityGraph(attributePaths = "author")
+    @EntityGraph(attributePaths = {"author", "comments"})
     Page<Task> findAll(Pageable pageable);
 
-    @EntityGraph(attributePaths = "author")
+    @EntityGraph(attributePaths = {"author", "comments"})
     Page<Task> findByAuthorId(Integer authorId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"author", "comments"})

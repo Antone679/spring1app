@@ -8,10 +8,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 
@@ -38,9 +35,19 @@ public class PersonUpdateDTO {
     @Column(name = "role")
     Role role;
 
+    public PersonUpdateDTO() {
+    }
+
     public PersonUpdateDTO(Integer id, String userName, String password) {
         this.id = id;
         this.userName = userName;
         this.password = password;
+    }
+
+    public PersonUpdateDTO(Integer id, String userName, String password, String email) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
     }
 }
