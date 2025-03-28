@@ -302,3 +302,8 @@
 2025-03-28T10:05:32.782+03:00  INFO 7492 --- [http-nio-8080-exec-5] c.a.s.controller.TaskController          : Tasks returned successfully
 2025-03-28T10:05:36.066+03:00  WARN 7492 --- [http-nio-8080-exec-7] org.hibernate.orm.query                  : HHH90003004: firstResult/maxResults specified with collection fetch; applying in memory
 2025-03-28T10:05:36.086+03:00  INFO 7492 --- [http-nio-8080-exec-7] c.a.s.controller.TaskController          : Tasks returned successfully
+2025-03-28T10:32:45.119+03:00  INFO 7492 --- [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-03-28T10:32:45.179+03:00  INFO 7492 --- [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-03-28T10:32:45.235+03:00  INFO 7492 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-03-28T10:32:45.272+03:00  INFO 7492 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-03-28T10:32:45.290+03:00  INFO 7492 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
