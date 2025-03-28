@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication page</title>
+    <title data-th-text="#{authenticationPage}"></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/validation_css.css}">
 </head>
@@ -11,7 +11,7 @@
 <div class="login-form">
     <div class="form-header">
         <img src="/css/logo.png" alt="Вход" style="width: 100px; height: auto;" />
-        <h5>Добро пожаловать в TaskTracker</h5>
+        <h5 data-th-text="#{auth.greeting}"></h5>
     </div>
 
     <form name="f" method="post" action="/process_login">
@@ -19,30 +19,35 @@
 
          <div th:if="${param.error}" style="color: red">
              <div class="form-group text-center">
-             Неправильные имя или пароль
+                 <p data-th-text="#{auth.incorrect}"></p>
              </div>
          </div>
 
          <div class="form-group">
              <div class="form-group text-center">
-             <label for="username">Введите имя пользователя:</label>
+             <label for="username"><p data-th-text="#{auth.username}"></p></label>
              <input type="text" name="username" id="username" class="form-control" required/>
              </div>
          </div>
 
          <div class="form-group">
              <div class="form-group text-center">
-             <label for="password">Введите пароль:</label>
+             <label for="password"><p data-th-text="#{auth.password}"></p></label>
              <input type="password" name="password" id="password" class="form-control" required/>
              </div>
          </div>
 
-         <button type="submit" class="btn btn-primary btn-block">Войти</button>
+         <button type="submit" class="btn btn-primary btn-block" data-th-text="#{auth.enter}"></button>
      </form>
  <br>
      <p class="text-center">
-         <a th:href="@{/auth/registration}" class="text-muted">Зарегистрироваться</a>
+         <a th:href="@{/auth/registration}" class="text-muted" data-th-text="#{auth.register}"></a>
      </p>
+    <p class="text-center" style="white-space: nowrap;">
+        <a class="nav-link active" href="/auth/login?lang=en" style="display: inline-block;">English</a>
+        <a class="nav-link active" href="/auth/login?lang=fr" style="display: inline-block;">Français</a>
+        <a class="nav-link active" href="/auth/login?lang=ru" style="display: inline-block;">Русский</a>
+    </p>
  </div>
 
  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

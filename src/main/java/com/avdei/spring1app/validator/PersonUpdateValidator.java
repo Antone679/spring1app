@@ -6,6 +6,9 @@ import com.avdei.spring1app.mapper.PersonMapper;
 import com.avdei.spring1app.model.Person;
 import com.avdei.spring1app.service.PeopleService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -15,10 +18,13 @@ public class PersonUpdateValidator implements Validator {
 
     private final Validator validator;
     private final PeopleService peopleService;
+    private final MessageSource messageSource;
 
-    public PersonUpdateValidator(Validator validator, PeopleService peopleService) {
+    @Autowired
+    public PersonUpdateValidator(Validator validator, PeopleService peopleService, MessageSource messageSource) {
         this.validator = validator;
         this.peopleService = peopleService;
+        this.messageSource = messageSource;
     }
 
     @Override
@@ -40,14 +46,18 @@ public class PersonUpdateValidator implements Validator {
                 boolean isUpdatingSameUser = currentPerson.getUserName().equals(personUpdateDTO.getUserName());
 
                 if (userNameExists && !isUpdatingSameUser) {
-                    errors.rejectValue("userName", "", "Username already exists");
+                    errors.rejectValue("userName", "",
+                            messageSource.getMessage("reg.username.exists",
+                                    null, LocaleContextHolder.getLocale()));
                 }
 
                 boolean emailExists = peopleService.getPersonByEmail(personUpdateDTO.getEmail().trim().toLowerCase()).isPresent();
                 boolean isUpdatingSameEmail = currentPerson.getEmail().equals(personUpdateDTO.getEmail());
 
                 if (emailExists && !isUpdatingSameEmail) {
-                    errors.rejectValue("email", "", "Email already exists");
+                    errors.rejectValue("email", "",
+                            messageSource.getMessage("reg.email.exists",
+                                    null, LocaleContextHolder.getLocale()));
                 }
             }
         }

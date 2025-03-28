@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasks</title>
+    <title data-th-text="#{tasksPage}"></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
     <style>
     </style>
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <a class="navbar-brand" href="/tasks">
@@ -23,21 +24,27 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page"
-                       href="/tasks/new">Create new</a>
+                       href="/tasks/new" data-th-text="#{tasks.create}"></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page"
-                       href="/tasks?sortBy=id&sortDirection=asc&showMyTasks=true&page=&size=10">My Tasks</a>
+                       href="/tasks?sortBy=id&sortDirection=asc&showMyTasks=true&page=&size=10"
+                       data-th-text="#{tasks.show.mine}"></a>
                 </li>
+                <li class="nav-item ml-auto"><a class="nav-link active" href="/tasks?lang=en">English</a></li>
+                <li class="nav-item ml-auto"><a class="nav-link active" href="/tasks?lang=fr">Français</a></li>
+                <li class="nav-item ml-auto"><a class="nav-link active" href="/tasks?lang=ru">Русский</a></li>
                 <li class="nav-item" th:if="${admin}">
-                    <a class="nav-link" href="/admin">Admin Panel</a>
+                    <a class="nav-link" href="/admin" data-th-text="#{tasks.admin}"></a>
                 </li>
             </ul>
+
             <div class="ml-auto">
                 <form th:action="@{/logout}" th:method="POST" class="form-inline">
-                    <button type="submit" class="btn btn-light">Exit</button>
+                    <button type="submit" class="btn btn-light" data-th-text="#{tasks.exit}"></button>
                 </form>
             </div>
+
         </div>
     </div>
 </nav>
@@ -50,30 +57,31 @@
 
 <br>
 <br>
-<h3 class="text-center">All your tasks
-    <small class="text-muted"><span class="badge bg-secondary text-white">in one place</span></small></h3>
+<h3 class="text-center">
+    <span th:text="#{tasks.welcome.first}"></span>
+    <small class="text-muted">
+        <span class="badge bg-secondary text-white" th:text="#{tasks.welcome.second}"></span>
+    </small>
+</h3>
 <br>
 <div class="d-flex">
     <div class="sidebar">
         <form th:action="@{/tasks}" method="get">
-            <label for="sortBy">Sort:</label>
+            <label for="sortBy"><p data-th-text="#{tasks.sort}"></p></label>
             <select name="sortBy" id="sortBy" class="form-control mb-2">
-                <option value="" th:selected="${sortBy == ''}">-- Choose --</option>
-                <option value="id" th:selected="${sortBy == 'id'}">Id</option>
-                <option value="status" th:selected="${sortBy == 'status'}">Status</option>
-                <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Created</option>
+                <option value="id" th:selected="${sortBy == 'id'}"><p data-th-text="#{tasks.id}"></p></option>
+                <option value="status" th:selected="${sortBy == 'status'}"><p data-th-text="#{tasks.status}"></p></option>
+                <option value="createdAt" th:selected="${sortBy == 'createdAt'}"><p data-th-text="#{tasks.created}"></p></option>
             </select>
 
-            <label for="sortDirection">Order:</label>
+            <label for="sortDirection"><p data-th-text="#{tasks.order}"></p></label>
             <select name="sortDirection" id="sortDirection" class="form-control mb-2">
-                <option value="" th:selected="${sortDirection == ''}">-- Choose --</option>
-                <option value="asc" th:selected="${sortDirection == 'asc'}">Older</option>
-                <option value="desc" th:selected="${sortDirection == 'desc'}">New</option>
+                <option value="asc" th:selected="${sortDirection == 'asc'}"><p data-th-text="#{tasks.older}"></p></option>
+                <option value="desc" th:selected="${sortDirection == 'desc'}"><p data-th-text="#{tasks.newer}"></p></option>
             </select>
 
-            <label for="size">Tasks per page:</label>
+            <label for="size"><p data-th-text="#{tasks.per.page}"></p></label>
             <select name="size" id="size" class="form-control mb-2">
-                <option value="" th:selected="${size == ''}">-- Choose --</option>
                 <option value="5" th:selected="${size == 5}">5</option>
                 <option value="10" th:selected="${size == 10}">10</option>
                 <option value="15" th:selected="${size == 15}">15</option>
@@ -82,10 +90,10 @@
             <input type="hidden" name="page" value="0"/>
             <div class="form-check mb-2">
                 <input type="checkbox" class="form-check-input" id="showMyTasks" name="showMyTasks" th:checked="${showMyTasks}"/>
-                <label class="form-check-label" for="showMyTasks">Only mine tasks</label>
+                <label class="form-check-label" for="showMyTasks"><p data-th-text="#{tasks.only.mine}"></p></label>
             </div>
 
-            <button type="submit" class="btn btn-primary">Implement sorting</button>
+            <button type="submit" class="btn btn-primary" data-th-text="#{tasks.implement}"></button>
         </form>
     </div>
 
@@ -93,12 +101,12 @@
         <table class="table table-bordered table-striped w-100">
             <thead>
             <tr style="background-color: #007bff; color: white;">
-                <th>Id</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Author</th>
-                <th>Created</th>
-                <th>Actions</th>
+                <th th:text="#{tasks.id}"></th>
+                <th th:text="#{tasks.description}"></th>
+                <th th:text="#{tasks.status}"></th>
+                <th th:text="#{tasks.author}"></th>
+                <th th:text="#{tasks.created}"></th>
+                <th th:text="#{tasks.actions}"></th>
             </tr>
             </thead>
             <tbody>
@@ -111,17 +119,20 @@
                 <td>
                     <div th:if="${taskDTO.author.id == isMyTask || admin}">
                         <form th:method="GET" th:action="@{/tasks/edit/{id}(id=${taskDTO.id})}" style="display:inline;">
-                            <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                            <button type="submit" class="btn btn-warning btn-sm" th:text="#{tasks.edit}">
+
+                            </button>
                         </form>
                         <form th:method="DELETE" th:action="@{/tasks/{id}(id=${taskDTO.id})}" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Sure you want to remove this task?');">Remove
+                                    onclick="return confirm(/*[[${'task.confirm.remove'}]]*/ 'Are you sure to delete this task?');"
+                                    th:text="#{tasks.remove}">
                             </button>
                         </form>
                     </div>
                     <div th:if="${!(taskDTO.author.id == isMyTask || admin)}">
                         <div class="p-3 mb-2 bg-secondary text-white">
-                        Task has been created by another User
+                            <span th:text="#{tasks.another.user}"></span>
                         </div>
                     </div>
                 </td>
@@ -129,8 +140,8 @@
             </tbody>
         </table>
         <div th:if="${tasksDTO.totalElements > 0}">
-            <span class="badge bg-primary text-white">Page: <span th:text="${tasksDTO.number + 1}"></span></span>
-            <span class="badge bg-primary text-white"> of <span th:text="${tasksDTO.totalPages}"></span></span>
+            <span class="badge bg-primary text-white"><span th:text="#{tasks.page}"></span> <span th:text="${tasksDTO.number + 1}"></span></span>
+            <span class="badge bg-primary text-white"><span th:text="#{tasks.of}"></span> <span th:text="${tasksDTO.totalPages}"></span></span>
         </div>
         <br>
         <div th:if="${tasksDTO.totalElements > 0}">

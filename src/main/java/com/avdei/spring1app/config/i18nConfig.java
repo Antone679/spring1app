@@ -36,7 +36,7 @@ public class i18nConfig implements WebMvcConfigurer {
     @Bean
     public HandlerInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-        localeChangeInterceptor.setParamName("language");
+        localeChangeInterceptor.setParamName("lang");
         return localeChangeInterceptor;
     }
 

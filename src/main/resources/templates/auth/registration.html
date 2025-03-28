@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Page</title>
+    <title data-th-text="#{registrationPage}"></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" th:href="@{/css/validation_css.css}">
 </head>
 <body>
 <div class="registration-form">
-    <h1 class="text-center">Регистрация</h1>
+    <h1 class="text-center" data-th-text="#{registrationPage}"></h1>
     <form th:method="POST" th:action="@{/auth/registration}" th:object="${personCreateDTO}">
         <div class="form-group">
             <div class="form-group text-center">
-            <label for="username">Имя пользователя:</label>
+            <label for="username"><p data-th-text="#{reg.name}"></p></label>
             <input type="text" name="userName" id="username" class="form-control" th:field="*{userName}" required/>
             <div style="color:red" th:if="${#fields.hasErrors('userName')}" th:errors="*{userName}">Username Error</div>
             </div>
@@ -21,7 +21,7 @@
 
         <div class="form-group">
             <div class="form-group text-center">
-            <label for="password">Пароль:</label>
+            <label for="password"><p data-th-text="#{reg.password}"></p></label>
             <input type="password" name="password" id="password" class="form-control" required/>
             <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
         </div>
@@ -29,25 +29,25 @@
 
         <div class="form-group">
             <div class="form-group text-center">
-            <label for="age">Возраст:</label>
-            <input type="number" name="age" id="age" min="0" class="form-control" th:field="*{age}" required/>
+            <label for="age"><p data-th-text="#{reg.age}"></p></label>
+            <input type="number" name="age" id="age" class="form-control" th:field="*{age}" required/>
             <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">Age Error</div>
         </div>
         </div>
 
         <div class="form-group">
             <div class="form-group text-center">
-            <label for="email">Электронная почта:</label>
+            <label for="email"><p data-th-text="#{reg.email}"></p></label>
             <input type="email" name="email" id="email" class="form-control" th:field="*{email}" required/>
             <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
         </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться</button>
+        <button type="submit" class="btn btn-primary btn-block" data-th-text="#{reg.reg}"></button>
     </form>
     <br>
     <p class="text-center">
-        <a th:href="@{/auth/login}" class="text-muted">Уже зарегистрированы? Войти</a>
+        <a th:href="@{/auth/login}" class="text-muted" data-th-text="#{reg.log}"></a>
     </p>
 </div>
 
