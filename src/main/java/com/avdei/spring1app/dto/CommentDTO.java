@@ -18,8 +18,8 @@ import java.util.Date;
 public class CommentDTO {
     Integer id;
     @Column(nullable = false, columnDefinition = "TEXT")
-    @Size(min = 3, max = 300, message = "Comment should be between 3 and 300 characters")
-    @Pattern(regexp = "^[^\\d\\t ].*", message = "Comment shouldn't start from digits or spaces")
+    @Size(min = 3, max = 300, message = "{comment.size}")
+    @Pattern(regexp = "^[^\\d\\t ].*", message = "{comment.pattern}")
     String commentText;
     Person author;
     Task task;

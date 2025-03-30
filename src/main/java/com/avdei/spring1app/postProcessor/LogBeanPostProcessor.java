@@ -23,7 +23,7 @@ public class LogBeanPostProcessor implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof TaskValidator){
             TaskValidator taskValidator = (TaskValidator) bean;
-            log.warn("{} bean is being initialized", taskValidator.getClass().getSimpleName());
+            log.warn("{} bean has been initialized", taskValidator.getClass().getSimpleName());
         }
         return bean;
     }

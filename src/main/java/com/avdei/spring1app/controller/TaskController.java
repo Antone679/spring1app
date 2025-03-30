@@ -129,6 +129,11 @@ public class TaskController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") int id, Model model) {
         TaskDTO task = taskService.getTaskById(id).get();
+
+        Person currentUser = CurrentUserUtil.getCurrentUser();
+        if (currentUser.getId().equals(task.getAuthor().getId())
+        || currentUser.getRole() != Role.ADMIN) return "redirect:/tasks";
+
         TaskUpdateDTO taskDTO = taskMapper.mapToUpdateDTO(task);
         log.info("Task has been found successfully");
         model.addAttribute("taskDTO", taskDTO);

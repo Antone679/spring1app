@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,7 +51,12 @@ public class AuthenticationController {
             summary = "Возвращается страницу login"
     )
     @GetMapping("/login")
-    public String getLoginPage() {
+    public String getLoginPage(@AuthenticationPrincipal UserDetails userDetails) {
+
+        if (userDetails != null) {
+            return "redirect:/tasks";
+        }
+
         log.info("GET request authentication page");
         return "auth/login";
     }

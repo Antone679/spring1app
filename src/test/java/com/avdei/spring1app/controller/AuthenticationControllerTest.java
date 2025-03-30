@@ -112,7 +112,7 @@ class AuthenticationControllerTest {
     }
 
     @Test
-    void testRegisterSuccessWithNotValidParams() throws Exception {
+    void testRegisterNotSuccessWithNotValidParams() throws Exception {
 
         mockMvc.perform(post("/auth/registration")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
