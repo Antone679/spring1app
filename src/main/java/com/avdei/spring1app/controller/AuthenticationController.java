@@ -2,6 +2,7 @@ package com.avdei.spring1app.controller;
 
 import com.avdei.spring1app.dto.PersonCreateDTO;
 import com.avdei.spring1app.listeners.PersonCreationEvent;
+import com.avdei.spring1app.service.MailSenderService;
 import com.avdei.spring1app.service.PeopleService;
 import com.avdei.spring1app.validator.PersonCreateValidator;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -34,6 +37,7 @@ public class AuthenticationController {
     final PeopleService peopleService;
     final PersonCreateValidator personValidator;
     final ApplicationEventPublisher publisher;
+
 
     @Autowired
     public AuthenticationController(PeopleService peopleService, PersonCreateValidator personValidator, ApplicationEventPublisher publisher) {
@@ -70,6 +74,7 @@ public class AuthenticationController {
         log.info("GET request registration page");
         return "auth/registration";
     }
+
     //
     @Operation(
             summary = "Проводит процесс регистрации"
@@ -85,6 +90,8 @@ public class AuthenticationController {
         peopleService.savePerson(personCreateDTO);
         ApplicationEvent event = new PersonCreationEvent(this, personCreateDTO);
         publisher.publishEvent(event);
+
+
         return "redirect:/auth/login";
 
     }

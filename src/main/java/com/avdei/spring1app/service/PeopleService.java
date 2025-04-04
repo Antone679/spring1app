@@ -13,7 +13,10 @@ import com.avdei.spring1app.util.CurrentUserUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +34,18 @@ public class PeopleService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PersonMapper personMapper;
     private final CommentRepository commentRepository;
+    final MailSenderService mailSenderService;
+    final MessageSource messageSource;
 
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, PersonMapper personMapper, CommentRepository commentRepository) {
+    public PeopleService(PeopleRepository peopleRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
+                         PersonMapper personMapper, CommentRepository commentRepository, MailSenderService mailSenderService, MessageSource messageSource) {
         this.peopleRepository = peopleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.personMapper = personMapper;
         this.commentRepository = commentRepository;
+        this.mailSenderService = mailSenderService;
+        this.messageSource = messageSource;
     }
 
     public Optional<Person> getPersonByUserName(String username) {
@@ -71,7 +79,9 @@ public class PeopleService {
                 .filter(person -> !person.getId().equals(currentUserId))
                 .toList();
 
-        return new PageImpl<>(personDTOList, pageable, persons.getTotalElements() - 1);
+        long totalElements = persons.getTotalElements();
+
+        return new PageImpl<>(personDTOList, pageable, totalElements);
 
     }
 
@@ -83,6 +93,21 @@ public class PeopleService {
         person.setPassword(bCryptPasswordEncoder.encode(person.getPassword()));
         person.setRole(Role.USER);
         peopleRepository.save(person);
+
+        String message = messageSource.getMessage("reg.mail.body", null,
+                LocaleContextHolder.getLocale());
+
+        String body = String.format(message, personCreateDTO.getUserName(),
+                personCreateDTO.getPassword());
+
+        System.out.println(messageSource.getMessage("reg.mail.subject",
+                null, LocaleContextHolder.getLocale()));
+        System.out.println(body);
+
+        mailSenderService.sendEmail(personCreateDTO.getEmail(),
+                messageSource.getMessage("reg.mail.subject",
+                        null, LocaleContextHolder.getLocale()),
+                body);
     }
     @Transactional
     public void updatePerson(int id, PersonUpdateDTO personUpdateDTO) {
@@ -103,6 +128,7 @@ public class PeopleService {
         }
         commentRepository.saveAll(comments);
         peopleRepository.deleteById(id);
+
     }
 
 }
